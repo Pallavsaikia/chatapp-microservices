@@ -14,4 +14,18 @@ spec:
     spec:
       containers:
         - name: authentication
-          image: pallavsaikia/authentication
+          image: authentication
+          imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentication-clusterip-srv
+spec:
+  selector:
+    app: authentication
+  ports:
+    - name: authentication
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
