@@ -3,6 +3,8 @@ export enum StatusCode {
     success = 200,
     _201 = 201,
     created = 201,
+    _400 = 400,
+    badrequest = 400,
     _401 = 401,
     unauthorized = 401,
     _404 = 404,

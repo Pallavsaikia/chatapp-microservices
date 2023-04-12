@@ -1,9 +1,8 @@
 import express from 'express'
 import morgan from 'morgan'
 import mongoose from 'mongoose';
-import { PageNotFoundError } from './util/errors';
-import { ErrorHandler } from './middleware/error_handlers';
-import { DBConnectionError } from './util/errors/lib/dbconnectionerror';
+import { DBConnectionError, PageNotFoundError } from './util/errors';
+import { ErrorHandler } from './middleware/error-handlers';
 
 const mongoDbStart = async () => {
     try {

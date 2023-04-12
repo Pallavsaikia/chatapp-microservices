@@ -5,7 +5,7 @@ export interface ResponseAttr {
     success: Boolean,
     data: Object | null,
     message: String,
-    error: Object | null,
+    error: Array<any> | null,
     __t: number
 }
 

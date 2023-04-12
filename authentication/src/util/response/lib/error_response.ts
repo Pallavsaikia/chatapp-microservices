@@ -7,7 +7,7 @@ export interface ErrorAttr {
     message: String,
     statuscode: StatusCode | null
     __t: TokenCode | null,
-    error: Object | null
+    error: Array<any> | null
 }
 
 
