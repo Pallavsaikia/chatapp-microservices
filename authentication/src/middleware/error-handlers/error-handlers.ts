@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction } from "express";
-import { ErrorResponse, StatusCode } from "../util/response";
-import { DBConnectionError, PageNotFoundError, RequestValidationError } from "../util/errors";
+import { ErrorResponse, StatusCode } from "../../util/response";
+import { DBConnectionError, PageNotFoundError, RequestValidationError } from "../../util/errors";
 
 export const ErrorHandler = (
     err: Error,

@@ -4,6 +4,9 @@ import mongoose from 'mongoose';
 import { DBConnectionError, PageNotFoundError } from './util/errors';
 import { ErrorHandler } from './middleware/error-handlers';
 
+
+
+
 const mongoDbStart = async () => {
     try {
         await mongoose.connect("mongodb://authentication-mongo-srv:27017/auth")
