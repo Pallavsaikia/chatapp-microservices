@@ -9,10 +9,11 @@ import { ErrorHandler } from './middleware/error-handlers';
 
 const mongoDbStart = async () => {
     try {
-        await mongoose.connect("mongodb://authentication-mongo-srv:27017/auth")
+        await mongoose.connect("mongodb://adming:password123@mongo-nodeport-svc:32000/auth")
         console.log('connected to db')
     } catch (e) {
-        throw new DBConnectionError()
+        console.log(e)
+        // throw new DBConnectionError()
     }
 
 }
