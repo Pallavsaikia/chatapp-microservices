@@ -6,7 +6,8 @@ interface UserAttr {
     email: String,
     username: String,
     password: String,
-    verified: Boolean
+    verified: Boolean,
+    verificatonCode: String | null
 }
 
 interface UserModel extends mongoose.Model<UserDoc> {
@@ -28,12 +29,14 @@ const userSchema = new mongoose.Schema(
         email: {
             type: String,
             required: true,
-            index: true
+            index: true,
+            unique: true
         },
         username: {
             type: String,
             required: true,
-            index: true
+            index: true,
+            unique: true
         },
         password: {
             type: String,
@@ -41,6 +44,10 @@ const userSchema = new mongoose.Schema(
         },
         verified: {
             type: Boolean,
+            default: false,
+        },
+        verificatonCode: {
+            type: String,
             default: false,
         }
     },
@@ -54,9 +61,8 @@ userSchema.statics.build = (attr: UserAttr) => {
     return new User(attr)
 }
 
-userSchema.statics.passwordhash = (attr: UserAttr) => {
-    return new User(attr)
-}
+
+
 userSchema.pre('save', async function (done) {
     if (this.isModified('password')) {
         const hashed = await Password.toHash(this.get('password'))

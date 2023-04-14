@@ -1,6 +1,7 @@
 import { Response, Request, NextFunction } from "express";
 import { ErrorResponse, StatusCode } from "../../../util/response";
 import { DBConnectionError, PageNotFoundError, RequestValidationError } from "../../../util/errors";
+import { DBConflictError } from "../../../util/errors/lib/db-conflict-error";
 
 export const ErrorHandler = (
     err: Error,
@@ -38,6 +39,17 @@ export const ErrorHandler = (
         })
     }
 
+    if (err instanceof DBConflictError) {
+        const formattedErrors = err.errors.map(error => {
+            return { message: error.msg, field: error.param }
+        })
+        return new ErrorResponse(res, {
+            error: formattedErrors,
+            message: err.reason,
+            statuscode: err.status,
+            __t: null
+        })
+    }
     new ErrorResponse(res, {
         error: [{ message: "something went wrong" }],
         // message: "something went wrong",
