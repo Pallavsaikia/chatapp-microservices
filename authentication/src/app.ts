@@ -3,17 +3,19 @@ import morgan from 'morgan'
 import mongoose from 'mongoose';
 import { DBConnectionError, PageNotFoundError } from './util/errors';
 import { ErrorHandler } from './middleware/error-handlers';
+import { User } from './models';
 
 
 
 
 const mongoDbStart = async () => {
     try {
-        await mongoose.connect("mongodb://adming:password123@mongo-nodeport-svc:32000/auth")
-        console.log('connected to db')
+        const db=await mongoose.connect("mongodb://admin:password123@127.0.0.1:30201/auth?authSource=admin")
+        
     } catch (e) {
         console.log(e)
         // throw new DBConnectionError()
+        const user=new User()
     }
 
 }

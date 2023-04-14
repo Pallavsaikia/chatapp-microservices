@@ -4,7 +4,8 @@ import mongoose from "mongoose";
 interface UserAttr {
     email: String,
     username: String,
-    password: String
+    password: String,
+    verified:Boolean
 }
 
 interface UserModel extends mongoose.Model<UserDoc> {
@@ -17,6 +18,7 @@ interface UserDoc extends mongoose.Document {
     email: String,
     username: String,
     password: String,
+    verified:Boolean,
     createdAt: String,
     updatedAt: String
 }
@@ -35,6 +37,10 @@ const userSchema = new mongoose.Schema(
         password: {
             type: String,
             required: true,
+        },
+        verified: {
+            type: Boolean,
+            default: false,
         }
     },
     {
