@@ -3,7 +3,7 @@ import { StatusCode } from "./codes/status_code";
 import { Response } from "express"
 import { TokenCode } from "./codes/token_code";
 
-export interface SuccessAttr {
+export interface SuccessResponseAttr {
     data: Object | null,
     message: String,
     statuscode: StatusCode | null
@@ -11,7 +11,7 @@ export interface SuccessAttr {
 
 
 export class SuccessResponse extends ResponseBody {
-    constructor(response: Response, succesAttr: SuccessAttr) {
+    constructor(response: Response, succesAttr: SuccessResponseAttr) {
         super(succesAttr.statuscode ? succesAttr.statuscode : StatusCode._200, {
             success: true,
             data: succesAttr.data,

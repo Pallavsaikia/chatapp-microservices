@@ -1,7 +1,11 @@
 import { Response, Request, NextFunction } from "express";
 import { ErrorResponse, StatusCode } from "../../../util/response";
-import { DBConnectionError, PageNotFoundError, RequestValidationError } from "../../../util/errors";
-import { DBConflictError } from "../../../util/errors/lib/db-conflict-error";
+import {
+    DBConflictError,
+    DBConnectionError,
+    PageNotFoundError,
+    RequestValidationError
+} from "../../../util/errors";
 
 export const ErrorHandler = (
     err: Error,
@@ -11,7 +15,7 @@ export const ErrorHandler = (
 ) => {
     if (err instanceof RequestValidationError) {
         const formattedErrors = err.errors.map(error => {
-            return { message: error.msg, field: error.param }
+            return { message: error.msg as string, field: error.param }
         })
         return new ErrorResponse(res, {
             error: formattedErrors,
@@ -23,7 +27,7 @@ export const ErrorHandler = (
 
     if (err instanceof DBConnectionError) {
         return new ErrorResponse(res, {
-            error: [{ message: err.reason }],
+            error: [{ message: err.reason, field: "database" }],
             message: err.reason,
             statuscode: err.status,
             __t: null
@@ -32,7 +36,7 @@ export const ErrorHandler = (
 
     if (err instanceof PageNotFoundError) {
         return new ErrorResponse(res, {
-            error: [{ message: err.reason }],
+            error: [{ message: err.reason, field: "url" }],
             message: err.reason,
             statuscode: err.status,
             __t: null
@@ -51,7 +55,7 @@ export const ErrorHandler = (
         })
     }
     new ErrorResponse(res, {
-        error: [{ message: "something went wrong" }],
+        error: [{ message: "something went wrong", field: err.name }],
         // message: "something went wrong",
         message: err.message,
         statuscode: StatusCode._404,

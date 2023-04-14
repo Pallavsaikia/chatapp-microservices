@@ -10,7 +10,7 @@ export enum StatusCode {
     _404 = 404,
     notfound = 404,
     _409 = 409,
-    dbconflict = 409,
+    conflict = 409,
     _500 = 500,
     server_error = 500,
 }

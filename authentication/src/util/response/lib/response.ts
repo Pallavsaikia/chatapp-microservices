@@ -1,11 +1,12 @@
 import { Response } from "express"
 import { StatusCode } from "./codes/status_code";
+import { ErrorDetails } from "./error_details";
 
 export interface ResponseAttr {
     success: Boolean,
     data: Object | null,
     message: String,
-    error: Array<any> | null,
+    error: Array<ErrorDetails> | null,
     __t: number
 }
 
