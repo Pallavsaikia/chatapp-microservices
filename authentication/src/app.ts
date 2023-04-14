@@ -1,21 +1,20 @@
-import express from 'express'
+import express, { Request, Response, NextFunction } from 'express'
 import morgan from 'morgan'
 import mongoose from 'mongoose';
+import { app as apiRoutes } from './api/api_routes/api.routes'
 import { DBConnectionError, PageNotFoundError } from './util/errors';
 import { ErrorHandler } from './middleware/error-handlers';
-import { User } from './models';
 
 
 
 
 const mongoDbStart = async () => {
     try {
-        const db=await mongoose.connect("mongodb://admin:password123@127.0.0.1:30201/auth?authSource=admin")
-        
+        const db = await mongoose.connect("mongodb://admin:password123@127.0.0.1:30201/auth?authSource=admin")
+        console.log("connected to db")
     } catch (e) {
         console.log(e)
         // throw new DBConnectionError()
-        const user=new User()
     }
 
 }
@@ -27,13 +26,12 @@ export function app() {
     app.use(express.urlencoded({ extended: true }));
     mongoDbStart()
 
-    app.get('/', (req, res) => {
-        res.send('hello world')
-    })
+    //routes
+    app.use('/', apiRoutes)
 
 
     //error for page not found
-    app.use((req, res, next) => {
+    app.use((req: Request, res: Response, next: NextFunction) => {
         const error = new PageNotFoundError()
         next(error);
     });

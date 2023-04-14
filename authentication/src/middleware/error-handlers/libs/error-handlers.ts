@@ -10,7 +10,7 @@ export const ErrorHandler = (
 ) => {
     if (err instanceof RequestValidationError) {
         const formattedErrors = err.errors.map(error => {
-            return { message: error.msg, field: err.name }
+            return { message: error.msg, field: error.param }
         })
         return new ErrorResponse(res, {
             error: formattedErrors,
@@ -40,7 +40,8 @@ export const ErrorHandler = (
 
     new ErrorResponse(res, {
         error: [{ message: "something went wrong" }],
-        message: "something went wrong",
+        // message: "something went wrong",
+        message: err.message,
         statuscode: StatusCode._404,
         __t: null
     })
