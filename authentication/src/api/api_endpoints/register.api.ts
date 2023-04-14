@@ -1,8 +1,8 @@
 import express, { Request, Response, NextFunction } from "express";
 import { User } from "../../models";
 import { registerValidationSchema, validateRequestSchema } from "../../middleware/validations";
-import { DBConflictError, DBConflictErrorAttr } from "../../util/errors/lib/db-conflict-error";
 import { StatusCode, SuccessResponse } from "../../util/response";
+import { DBConflictError } from "../../util/errors";
 
 const router = express.Router()
 
