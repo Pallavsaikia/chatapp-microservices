@@ -1,2 +1,2 @@
-export * from './libs/invalid-token-error'
-export * from './libs/token-expiry-error'
+export * from './invalid-token-error'
+export * from './token-expiry-error'

@@ -1,1 +1,1 @@
-export * from './libs/request-validation-error'
+export * from './request-validation-error'

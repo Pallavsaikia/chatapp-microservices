@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
-import { JWTTokenAttr } from "./schema/definations/jwt-body-attr"
-import { JWTTokenType } from "./schema/definations/jwt-token-type"
-import { JWTTokenExpiryTime } from "./schema/definations/jwt-expiry"
+import { JWTTokenAttr } from "./schema/jwt-body-attr"
+import { JWTTokenType } from "./schema/jwt-token-type"
+import { JWTTokenExpiryTime } from "./schema/jwt-expiry"
 
 
 

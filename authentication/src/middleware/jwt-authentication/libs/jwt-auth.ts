@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { JWTTokenDoc } from "./schema/definations/jwt-decode-doc";
+import { JWTTokenDoc } from "./schema/jwt-decode-doc";
 import { InvalidJWtTokenError, JWtTokenExpiryError } from "./errors/";
 import { JWTTokenType } from "./schema";
 
