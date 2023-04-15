@@ -8,7 +8,7 @@ import {
 } from "../../../util/errors";
 
 import { RequestValidationError } from "../../validations/libs/errors";
-import { InvalidJWtTokenError, JWtTokenExpiryError } from "../../jwt/libs/errors";
+import { InvalidJWtTokenError, JWtTokenExpiryError } from "../../jwt-authentication";
 
 export const ErrorHandler = (
     err: Error,
@@ -27,7 +27,7 @@ export const ErrorHandler = (
             __t: TokenCode.invalidtoken
         })
     }
-    
+
     if (err instanceof JWtTokenExpiryError) {
         const formattedErrors = err.errors.map(error => {
             return { message: error.msg as string, field: error.param }
