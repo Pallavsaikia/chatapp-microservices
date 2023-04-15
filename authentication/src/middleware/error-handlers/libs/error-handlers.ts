@@ -7,7 +7,7 @@ import {
     PageNotFoundError,
 } from "../../../util/errors";
 
-import { RequestValidationError } from "../../validations/libs/errors";
+import { RequestValidationError } from "../../validations/";
 import { InvalidJWtTokenError, JWtTokenExpiryError } from "../../jwt-authentication";
 
 export const ErrorHandler = (

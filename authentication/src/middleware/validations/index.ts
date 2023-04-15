@@ -1,2 +1,3 @@
 export * from './libs/validate-request-body'
-export * from './schemas'
+export * from './libs/schemas'
+export * from './libs/errors'

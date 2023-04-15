@@ -1,1 +1,1 @@
-export * from './lib/password'
+export * from './libs/password'
