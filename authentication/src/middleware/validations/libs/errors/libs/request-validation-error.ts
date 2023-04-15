@@ -1,5 +1,5 @@
 import { ValidationError } from "express-validator"
-import { StatusCode } from "../../response"
+import { StatusCode } from "../../../../../util/response"
 
 export class RequestValidationError extends Error {
     status=StatusCode._400

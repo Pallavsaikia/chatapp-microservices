@@ -1,3 +1,7 @@
+import { config } from 'dotenv';
+import path from 'path';
+config({ path: path.resolve(__dirname, '../.env') })
+
 import express, { Request, Response, NextFunction } from 'express'
 import morgan from 'morgan'
 import mongoose from 'mongoose';
@@ -10,7 +14,7 @@ import { ErrorHandler } from './middleware/error-handlers';
 
 const mongoDbStart = async () => {
     try {
-        const db = await mongoose.connect("mongodb://admin:password123@127.0.0.1:30201/auth?authSource=admin")
+        const db = await mongoose.connect(process.env.MONGO_URL!)
         console.log("connected to db")
     } catch (e) {
         console.log(e)
