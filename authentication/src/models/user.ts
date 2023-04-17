@@ -1,10 +1,8 @@
 import mongoose from "mongoose";
 import { Password } from "../util/password";
+import { OtpMetaData } from "./meta/otp-meta";
 
-export enum OtpMetaData {
-    MaxOTPATTempts = 5,
-    OTPValidityInMilli = 900000 //15 minutes
-}
+
 interface UserAttr {
     email: String,
     username: String,
@@ -103,11 +101,12 @@ userSchema.statics.canRequestOtp = async (_id: String): Promise<Boolean> => {
     if (user.blockOTPRequest) {
         return false
     }
-    if (user.otpAttempts >= OtpMetaData.MaxOTPATTempts) {
+    if (user.otpAttempts >= OtpMetaData.MaxOTPAttempts) {
         return false
     }
     return true
 }
+
 
 
 

@@ -1,12 +1,13 @@
 import express, { Request, Response, NextFunction } from "express";
-import { Otp, OtpMetaData, User } from "../../models";
+import { Otp, User } from "../../models";
 import { registerValidationSchema, validateRequestSchema } from "../../middleware/validations";
 import { StatusCode, SuccessResponse } from "../../util/response";
 import { DBConflictError } from "../../util/errors";
-import { OTP } from "../../util/otp/libs/otp-gen";
+import { OTPServices } from "../../util/otp/libs/otp-gen";
 import { sendEmail } from "../../util/email";
 import { JWT } from "../../middleware/jwt-authentication";
 import { DateTime } from "../../util/datetime";
+import { OtpMetaData } from "../../models/meta";
 
 const router = express.Router()
 
@@ -19,8 +20,8 @@ router.post('/',
             const { username, email, password } = req.body
             const user = await User.find({ $or: [{ username: username }, { email: email }] }).lean()
             if (user.length <= 0) {
-                const otp = OTP.generateOTP()
-                await sendEmail(otp, email)
+                const otp = OTPServices.generateOTP()
+                sendEmail(otp, email)
                 const saveduser = await User.buildTrimmed({ email: email, username: username, password: password }).save()
                 await Otp.build({
                     userid: saveduser._id, otp: otp,
