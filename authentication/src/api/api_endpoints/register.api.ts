@@ -1,9 +1,12 @@
 import express, { Request, Response, NextFunction } from "express";
-import { User } from "../../models";
+import { Otp, OtpMetaData, User } from "../../models";
 import { registerValidationSchema, validateRequestSchema } from "../../middleware/validations";
 import { StatusCode, SuccessResponse } from "../../util/response";
 import { DBConflictError } from "../../util/errors";
-import { JWT } from "../../middleware/jwt";
+import { OTP } from "../../util/otp/libs/otp-gen";
+import { sendEmail } from "../../util/email";
+import { JWT } from "../../middleware/jwt-authentication";
+import { DateTime } from "../../util/datetime";
 
 const router = express.Router()
 
@@ -16,7 +19,13 @@ router.post('/',
             const { username, email, password } = req.body
             const user = await User.find({ $or: [{ username: username }, { email: email }] }).lean()
             if (user.length <= 0) {
-                const saveduser = await User.build({ email: email, username: username, password: password, verified: false, verificatonCode: null }).save()
+                const otp = OTP.generateOTP()
+                await sendEmail(otp, email)
+                const saveduser = await User.buildTrimmed({ email: email, username: username, password: password }).save()
+                await Otp.build({
+                    userid: saveduser._id, otp: otp,
+                    validUpto: DateTime.getDateTimeAheadInMilli(OtpMetaData.OTPValidityInMilli)
+                }).save()
                 return new SuccessResponse(res, {
                     data: {
                         username: saveduser.username, email: saveduser.email,
@@ -29,7 +38,7 @@ router.post('/',
                             salt: process.env.JWT_REFRESH_TOKEN_SALT!, jwtExpiry: null
                         })
                     },
-                    message: "added", statuscode: StatusCode._201
+                    message: "verify email", statuscode: StatusCode._201
                 })
             }
 

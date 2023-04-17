@@ -18,4 +18,6 @@ export class Password {
         return buf.toString('hex') === hasedPassword
     }
 
+    
+
 }
