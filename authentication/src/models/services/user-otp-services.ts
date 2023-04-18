@@ -2,7 +2,7 @@ import { DateTime } from "../../util/datetime";
 import { DBConflictError } from "../../util/errors";
 import { OtpMetaData } from "../meta/otp-meta";
 import { Otp } from "../otp";
-import { User } from "../user";
+import { User, UserAttrTrimmed, UserDocTrimmed } from "../user";
 
 interface ValidateUserOtpSerciveResponseWrapper {
     valid: Boolean,
@@ -69,4 +69,13 @@ export async function ValidateUserOtpSercive(userid: string, otp: string): Promi
         valid: true,
         error: null
     }
+}
+
+export async function UserRegistrationService(user: UserAttrTrimmed, otp: string): Promise<UserDocTrimmed> {
+    const saveduser = await User.buildTrimmed({ email: user.email, username: user.username, password: user.password }).save()
+    await Otp.build({
+        userid: saveduser._id, otp: otp,
+        validUpto: DateTime.getDateTimeAheadInMilli(OtpMetaData.OTPValidityInMilli)
+    }).save()
+    return saveduser
 }

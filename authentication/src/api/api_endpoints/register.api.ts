@@ -6,8 +6,7 @@ import { DBConflictError } from "../../util/errors";
 import { OTPServices } from "../../util/otp/libs/otp-gen";
 import { sendEmail } from "../../util/email";
 import { JWT } from "../../middleware/jwt-authentication";
-import { DateTime } from "../../util/datetime";
-import { OtpMetaData } from "../../models/meta";
+import { UserRegistrationService } from "../../models/services";
 
 const router = express.Router()
 
@@ -21,23 +20,12 @@ router.post('/',
             const user = await User.find({ $or: [{ username: username }, { email: email }] }).lean()
             if (user.length <= 0) {
                 const otp = OTPServices.generateOTP()
+                const saveduser = await UserRegistrationService({ email: email, username: username, password: password }, otp)
                 sendEmail(otp, email)
-                const saveduser = await User.buildTrimmed({ email: email, username: username, password: password }).save()
-                await Otp.build({
-                    userid: saveduser._id, otp: otp,
-                    validUpto: DateTime.getDateTimeAheadInMilli(OtpMetaData.OTPValidityInMilli)
-                }).save()
                 return new SuccessResponse(res, {
                     data: {
+                        id:saveduser._id,
                         username: saveduser.username, email: saveduser.email,
-                        accesstoken: JWT.getNewAccessToken({
-                            user: { _id: saveduser._id, username: saveduser.username },
-                            salt: process.env.JWT_ACCESS_TOKEN_SALT!, jwtExpiry: null
-                        }),
-                        refreshtoken: JWT.getNewRefreshToken({
-                            user: { _id: saveduser._id, username: saveduser.username },
-                            salt: process.env.JWT_REFRESH_TOKEN_SALT!, jwtExpiry: null
-                        })
                     },
                     message: "verify email", statuscode: StatusCode._201
                 })

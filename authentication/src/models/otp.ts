@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { Password } from "../util/password";
 
 
 interface OTPAttr {
@@ -48,13 +47,7 @@ OTPSchema.statics.build = (attr: OTPAttr) => {
     return new Otp(attr)
 }
 
-// OTPSchema.pre('save', async function (done) {
-//     if (this.isModified('otp')) {
-//         const hashed = await Password.toHash(this.get('otp'))
-//         this.set('otp', hashed)
-//     }
-//     done()
-// })
+
 
 const Otp = mongoose.model<OTPDoc, OTPModel>('OTP', OTPSchema)
 

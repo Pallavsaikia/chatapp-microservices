@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { Password } from "../util/password";
-import { OtpMetaData } from "./meta/otp-meta";
 
 
 interface UserAttr {
@@ -12,7 +11,7 @@ interface UserAttr {
     otpTimeOut: number,
     otpAttempts: number
 }
-interface UserAttrTrimmed {
+export interface UserAttrTrimmed {
     email: String,
     username: String,
     password: String
@@ -20,10 +19,9 @@ interface UserAttrTrimmed {
 interface UserModel extends mongoose.Model<UserDoc> {
     build(attr: UserAttr): UserDoc
     buildTrimmed(attr: UserAttrTrimmed): UserDoc
-    canRequestOtp(_id: String): Boolean
 }
 
-interface UserDoc extends mongoose.Document {
+export interface UserDoc extends mongoose.Document {
     _id: String,
     email: String,
     username: String,
@@ -32,6 +30,21 @@ interface UserDoc extends mongoose.Document {
     blockOTPRequest: Boolean,
     otpTimeOut: number,
     otpAttempts: number
+    createdAt: String,
+    updatedAt: String
+}
+
+export interface UserDocTrimmed
+    extends Omit<UserDoc,
+        "password" |
+        "verified" |
+        "blockOTPRequest" |
+        "otpTimeOut" |
+        "otpAttempts"
+    > {
+    _id: String,
+    email: String,
+    username: String
     createdAt: String,
     updatedAt: String
 }
@@ -90,22 +103,6 @@ userSchema.statics.buildTrimmed = (attr: UserAttrTrimmed) => {
     })
 }
 
-userSchema.statics.canRequestOtp = async (_id: String): Promise<Boolean> => {
-    const user = await User.findById({ _id: _id }).lean()
-    if (!user) {
-        return false
-    }
-    if (user.otpTimeOut) {
-        return false
-    }
-    if (user.blockOTPRequest) {
-        return false
-    }
-    if (user.otpAttempts >= OtpMetaData.MaxOTPAttempts) {
-        return false
-    }
-    return true
-}
 
 
 
