@@ -18,7 +18,7 @@ router.post('/',
             }
             return new SuccessResponse(res, {
                 data: null,
-                message: "successfully verified", statuscode: StatusCode._200
+                message: "successfully verified", statuscode: StatusCode.accepted
             })
 
         } catch (e) {

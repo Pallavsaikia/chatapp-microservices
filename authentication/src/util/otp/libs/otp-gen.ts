@@ -1,6 +1,6 @@
 import { OtpMeta } from "./otp-meta";
 
-export class OTPServices {
+export class OTPGenerator {
     static OTP_LENGTH = 6
     static generateOTP(): string {
         var digits = '0123456789';

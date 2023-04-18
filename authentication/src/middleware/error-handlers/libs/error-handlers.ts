@@ -5,6 +5,7 @@ import {
     DBConflictError,
     DBConnectionError,
     PageNotFoundError,
+    UnAuthorizedError,
 } from "../../../util/errors";
 
 import { RequestValidationError } from "../../validations/";
@@ -40,6 +41,17 @@ export const ErrorHandler = (
         })
     }
 
+    if (err instanceof UnAuthorizedError) {
+        const formattedErrors = err.errors.map(error => {
+            return { message: error.msg as string, field: error.param }
+        })
+        return new ErrorResponse(res, {
+            error: formattedErrors,
+            message: err.reason,
+            statuscode: err.status,
+            __t: null
+        })
+    }
     if (err instanceof RequestValidationError) {
         const formattedErrors = err.errors.map(error => {
             return { message: error.msg as string, field: error.param }

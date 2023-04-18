@@ -3,7 +3,7 @@ import { Otp, User } from "../../models";
 import { registerValidationSchema, validateRequestSchema } from "../../middleware/validations";
 import { StatusCode, SuccessResponse } from "../../util/response";
 import { DBConflictError } from "../../util/errors";
-import { OTPServices } from "../../util/otp/libs/otp-gen";
+import { OTPGenerator } from "../../util/otp/libs/otp-gen";
 import { sendEmail } from "../../util/email";
 import { JWT } from "../../middleware/jwt-authentication";
 import { UserRegistrationService } from "../../models/services";
@@ -19,15 +19,15 @@ router.post('/',
             const { username, email, password } = req.body
             const user = await User.find({ $or: [{ username: username }, { email: email }] }).lean()
             if (user.length <= 0) {
-                const otp = OTPServices.generateOTP()
+                const otp = OTPGenerator.generateOTP()
                 const saveduser = await UserRegistrationService({ email: email, username: username, password: password }, otp)
                 sendEmail(otp, email)
                 return new SuccessResponse(res, {
                     data: {
-                        id:saveduser._id,
+                        id: saveduser._id,
                         username: saveduser.username, email: saveduser.email,
                     },
-                    message: "verify email", statuscode: StatusCode._201
+                    message: "created ,verify email to continue", statuscode: StatusCode._201
                 })
             }
 
