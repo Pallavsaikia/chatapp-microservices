@@ -6,7 +6,7 @@ export interface UnAuthorizedErrorAttr {
 }
 export class UnAuthorizedError extends Error {
 
-    status = StatusCode._401
+    status: StatusCode.unauthorized | StatusCode.forbidden = StatusCode._401
     reason = "Action Unauthorized"
 
     constructor(public errors: UnAuthorizedErrorAttr[]) {
