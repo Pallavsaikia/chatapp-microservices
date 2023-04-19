@@ -7,8 +7,7 @@ import morgan from 'morgan'
 import mongoose from 'mongoose';
 import { app as apiRoutes } from './api/api_routes/api.routes'
 import { DBConnectionError, PageNotFoundError } from './middleware/error-handlers/libs/errors';
-import { ErrorHandler } from './middleware/error-handlers/';
-
+import { ErrorHandler, handle } from './middleware/error-handlers/';
 
 
 
@@ -30,9 +29,10 @@ export function app(database: Function | null) {
     app.use(express.urlencoded({ extended: true }));
     database ? database() : mongoDbStart()
 
+    
 
     //routes
-    app.use('/', apiRoutes)
+    app.use('/', handle(apiRoutes))
 
 
     //error for page not found
