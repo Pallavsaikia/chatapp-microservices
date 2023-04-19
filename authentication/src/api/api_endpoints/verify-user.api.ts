@@ -12,4 +12,4 @@ router.post('/',
     handle(verifyUserController)
 )
 
-export { router }
+export { router as verifyUserRouter}

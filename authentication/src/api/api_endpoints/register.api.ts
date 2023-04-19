@@ -12,4 +12,4 @@ router.post('/',
     validateRequestSchema,
     handle(registerUserController))
 
-export { router }
+export { router as registerRouter }
