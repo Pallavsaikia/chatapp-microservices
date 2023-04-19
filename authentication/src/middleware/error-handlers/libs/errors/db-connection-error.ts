@@ -1,4 +1,4 @@
-import { StatusCode } from "../../response"
+import { StatusCode } from "../../../../util/response"
 
 export class DBConnectionError extends Error {
     reason = "Couldnot connect to Db"

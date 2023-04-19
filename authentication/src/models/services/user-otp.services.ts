@@ -1,5 +1,5 @@
 import { DateTime } from "../../util/datetime";
-import {  UnAuthorizedError } from "../../util/errors";
+import {  UnAuthorizedError } from "../../middleware/error-handlers";
 import { StatusCode } from "../../util/response";
 import { OtpMetaData } from "../meta/otp-meta";
 import { Otp } from "../otp";

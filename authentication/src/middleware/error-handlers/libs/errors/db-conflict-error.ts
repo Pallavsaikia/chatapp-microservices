@@ -1,5 +1,5 @@
 import { ValidationError } from "express-validator"
-import { StatusCode } from "../../response"
+import { StatusCode } from "../../../../util/response"
 
 export interface DBConflictErrorAttr {
     msg: string,

@@ -1,4 +1,4 @@
-import { StatusCode } from "../../response"
+import { StatusCode } from "../../../../util/response"
 
 export interface UnAuthorizedErrorAttr {
     msg: string,

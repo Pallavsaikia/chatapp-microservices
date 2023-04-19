@@ -6,8 +6,8 @@ import express, { Request, Response, NextFunction } from 'express'
 import morgan from 'morgan'
 import mongoose from 'mongoose';
 import { app as apiRoutes } from './api/api_routes/api.routes'
-import { DBConnectionError, PageNotFoundError } from './util/errors';
-import { ErrorHandler } from './middleware/error-handlers';
+import { DBConnectionError, PageNotFoundError } from './middleware/error-handlers/libs/errors';
+import { ErrorHandler } from './middleware/error-handlers/';
 
 
 

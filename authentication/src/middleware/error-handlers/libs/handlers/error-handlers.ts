@@ -1,15 +1,15 @@
 import { Response, Request, NextFunction } from "express";
-import { ErrorResponse, StatusCode, TokenCode } from "../../../util/response";
+import { ErrorResponse, StatusCode, TokenCode } from "../../../../util/response";
 
 import {
     DBConflictError,
     DBConnectionError,
     PageNotFoundError,
     UnAuthorizedError,
-} from "../../../util/errors";
+} from "../errors";
 
-import { RequestValidationError } from "../../validations/";
-import { InvalidJWtTokenError, JWtTokenExpiryError } from "../../jwt-authentication";
+import { RequestValidationError } from "../../../validations";
+import { InvalidJWtTokenError, JWtTokenExpiryError } from "../../../jwt-authentication";
 
 export const ErrorHandler = (
     err: Error,

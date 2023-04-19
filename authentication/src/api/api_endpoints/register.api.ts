@@ -1,12 +1,11 @@
 import express, { Request, Response, NextFunction } from "express";
-import { Otp, User } from "../../models";
 import { registerValidationSchema, validateRequestSchema } from "../../middleware/validations";
 import { StatusCode, SuccessResponse } from "../../util/response";
-import { DBConflictError } from "../../util/errors";
+import { DBConflictError } from "../../middleware/error-handlers/libs/errors";
 import { OTPGenerator } from "../../util/otp/libs/otp-gen";
 import { sendEmail } from "../../util/email";
-import { JWT } from "../../middleware/jwt-authentication";
 import { UserRegistrationService } from "../../models/services";
+import { IsUserNameOrEmailAvailableService } from "../../models/services/user.services";
 
 const router = express.Router()
 
@@ -17,8 +16,8 @@ router.post('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { username, email, password } = req.body
-            const user = await User.find({ $or: [{ username: username }, { email: email }] }).lean()
-            if (user.length <= 0) {
+            const { available, user } = await IsUserNameOrEmailAvailableService({ username: username, email: email })
+            if (available) {
                 const otp = OTPGenerator.generateOTP()
                 const saveduser = await UserRegistrationService({ email: email, username: username, password: password }, otp)
                 sendEmail(otp, email)
@@ -33,10 +32,10 @@ router.post('/',
 
             const dbConflictError = new DBConflictError([])
 
-            if (user[0].username === username) {
+            if (user!.username === username) {
                 dbConflictError.push({ msg: "username already exists", param: "username" })
             }
-            if (user[0].email === email) {
+            if (user!.email === email) {
                 dbConflictError.push({ msg: "email already exists", param: "email" })
             }
             return next(dbConflictError)

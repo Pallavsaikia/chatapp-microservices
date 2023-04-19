@@ -1,7 +1,6 @@
 import supertest from "supertest";
 import { app } from "../app"
 import { mockMongoConnect, mockMongoDisconnect } from "./helpers/moock-mongo"
-import mongoose from 'mongoose';
 import { isValidError, isValidErrorResonseBody, isValidSuccessResonseBody } from "./helpers/valid-response";
 
 const request = supertest(app(mockMongoConnect))
