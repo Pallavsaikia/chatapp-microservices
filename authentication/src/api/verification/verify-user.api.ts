@@ -1,7 +1,8 @@
 import express from "express";
-import { verifyUserValidationSchema, validateRequestSchema } from "../../middleware/validations";
+import {  validateRequestSchema } from "../../middleware/validations";
 import { handle } from "../../middleware/error-handlers";
 import { verifyUserController } from "../../controllers/verification";
+import { verifyUserValidationSchema } from "../../util/validation-schemas";
 
 const router = express.Router()
 

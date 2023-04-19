@@ -1,13 +1,15 @@
-import { Config } from "../../config";
-// accesstoken: JWT.getNewAccessToken({
-//     user: { _id: saveduser._id, username: saveduser.username },
-//     salt: Config.JWT_ACCESS_TOKEN_SALT, jwtExpiry: null
+import express from "express";
+import { handle } from "../../middleware/error-handlers";
+import { validateRequestSchema } from "../../middleware/validations";
+import { loginValidationSchema } from "../../util/validation-schemas";
+import { loginController } from "../../controllers/login";
+
+const router = express.Router()
 
 
+router.post('/',
+    loginValidationSchema,
+    validateRequestSchema,
+    handle(loginController))
 
-// }),
-
-// refreshtoken: JWT.getNewRefreshToken({
-//     user: { _id: saveduser._id, username: saveduser.username },
-//     salt: Config.JWT_REFRESH_TOKEN_SALT, jwtExpiry: null
-// })
+export { router as loginApi }

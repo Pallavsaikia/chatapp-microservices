@@ -4,7 +4,8 @@ import { JWTAuth } from "../middleware/jwt-authentication";
 import {
     registerApi,
     testApi,
-    verifyUserApi
+    verifyUserApi,
+    loginApi
 } from "../api";
 import { Config } from "../config";
 
@@ -13,6 +14,7 @@ const jwtauth = new JWTAuth(Config.JWT_ACCESS_TOKEN_SALT)
 
 app.use("/register", registerApi)
 app.use("/verify-user", verifyUserApi)
+app.use("/login", loginApi)
 app.use("/test", jwtauth.authFnMiddleware(), testApi)
 
 export { app }

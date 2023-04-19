@@ -1,8 +1,8 @@
 import express from "express";
-import { registerValidationSchema, validateRequestSchema } from "../../middleware/validations";
 import { handle } from "../../middleware/error-handlers";
 import { registerUserController } from "../../controllers/registration";
-
+import { registerValidationSchema } from "../../util/validation-schemas";
+import {  validateRequestSchema } from "../../middleware/validations";
 
 const router = express.Router()
 

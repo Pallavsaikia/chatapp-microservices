@@ -11,7 +11,7 @@ export interface IsUserNameOrEmailAvailableReturnAttr {
     user: UserDocTrimmed | null
     errorDescription: DBConflictError | null
 }
-export async function isUserNameOrEmailEService({ username, email }: IsUserNameOrEmailAvailableAttr): Promise<IsUserNameOrEmailAvailableReturnAttr> {
+export async function isUserNameOrEmailAvailableService({ username, email }: IsUserNameOrEmailAvailableAttr): Promise<IsUserNameOrEmailAvailableReturnAttr> {
     const userList = await User.find({ $or: [{ username: username }, { email: email }] }).lean()
     const dbConflictError = new DBConflictError([])
 
