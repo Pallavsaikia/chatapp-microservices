@@ -1,5 +1,5 @@
 // export * from './login.api'
 export * from './test.api'
-export * from './registration'
-export * from './verification'
-export * from './login'
+export * from './register.api'
+export * from './verify-user.api'
+export * from './login.api'

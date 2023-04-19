@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { StatusCode, SuccessResponse } from "../../util/response";
-import { OTPGenerator } from "../../util/otp";
-import { sendEmail } from "../../util/email";
-import { userRegistrationService, isUserNameOrEmailAvailableService } from "../../db-services";
-import { OtpMetaData } from "../../config";
+import { StatusCode, SuccessResponse } from "../util/response";
+import { OTPGenerator } from "../util/otp";
+import { sendEmail } from "../util/email";
+import { userRegistrationService, isUserNameOrEmailAvailableService } from "../db-services";
+import { OtpMetaData } from "../config";
 
 export async function loginController(req: Request, res: Response, next: NextFunction) {
     const { username, password } = req.body

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { StatusCode, SuccessResponse } from "../../util/response";
-import { validateUserOtpSercive } from "../../db-services";
+import { StatusCode, SuccessResponse } from "../util/response";
+import { validateUserOtpSercive } from "../db-services";
 
 export async function verifyUserController(req: Request, res: Response, next: NextFunction) {
     const { userid, otp } = req.body
