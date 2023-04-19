@@ -1,25 +1,38 @@
 import { UserDocTrimmed } from "../models/types"
 import { User } from "../models"
+import { DBConflictError } from "../middleware/error-handlers"
 
 export interface IsUserNameOrEmailAvailableAttr {
     username: String,
     email: String
 }
 export interface IsUserNameOrEmailAvailableReturnAttr {
-    available: Boolean,
+    error: Boolean,
     user: UserDocTrimmed | null
+    errorDescription: DBConflictError | null
 }
-export async function IsUserNameOrEmailAvailableService({ username, email }: IsUserNameOrEmailAvailableAttr): Promise<IsUserNameOrEmailAvailableReturnAttr> {
-    const user = await User.find({ $or: [{ username: username }, { email: email }] }).lean()
-    if (user.length <= 0) {
+export async function isUserNameOrEmailEService({ username, email }: IsUserNameOrEmailAvailableAttr): Promise<IsUserNameOrEmailAvailableReturnAttr> {
+    const userList = await User.find({ $or: [{ username: username }, { email: email }] }).lean()
+    const dbConflictError = new DBConflictError([])
+
+    if (userList.length <= 0) {
         return {
-            available: true,
-            user: null
+            error: false,
+            user: null,
+            errorDescription: null
         }
     } else {
+        const user = userList[0]
+        if (user!.username === username) {
+            dbConflictError.push({ msg: "username already exists", param: "username" })
+        }
+        if (user!.email === email) {
+            dbConflictError.push({ msg: "email already exists", param: "email" })
+        }
         return {
-            available: false,
-            user: user[0]
+            error: true,
+            user: user,
+            errorDescription: dbConflictError
         }
     }
 }

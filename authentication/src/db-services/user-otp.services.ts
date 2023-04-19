@@ -10,7 +10,7 @@ interface ValidateUserOtpSerciveResponseWrapper {
     error: UnAuthorizedError | null
 }
 
-export async function ValidateUserOtpSercive(userid: string, otp: string): Promise<ValidateUserOtpSerciveResponseWrapper> {
+export async function validateUserOtpSercive(userid: string, otp: string): Promise<ValidateUserOtpSerciveResponseWrapper> {
     const timenow = DateTime.getDateTimeInMilli()
     const unauthorizedError = new UnAuthorizedError([])
     unauthorizedError.reason = "something wrong with otp sent"
@@ -73,7 +73,7 @@ export async function ValidateUserOtpSercive(userid: string, otp: string): Promi
     }
 }
 
-export async function UserRegistrationService(user: UserAttrTrimmed, otp: string): Promise<UserDocTrimmed> {
+export async function userRegistrationService(user: UserAttrTrimmed, otp: string): Promise<UserDocTrimmed> {
     const saveduser = await User.buildTrimmed({ email: user.email, username: user.username, password: user.password }).save()
     await Otp.build({
         userid: saveduser._id, otp: otp,
