@@ -1,4 +1,5 @@
-import { User, UserDocTrimmed } from "../user"
+import { UserDocTrimmed } from "../models/types"
+import { User } from "../models"
 
 export interface IsUserNameOrEmailAvailableAttr {
     username: String,

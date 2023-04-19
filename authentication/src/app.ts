@@ -1,19 +1,16 @@
-import { config } from 'dotenv';
-import path from 'path';
-config({ path: path.resolve(__dirname, '../.env') })
-
 import express, { Request, Response, NextFunction } from 'express'
 import morgan from 'morgan'
 import mongoose from 'mongoose';
-import { app as apiRoutes } from './api/api_routes'
+import { app as apiRoutes } from './routes'
 import { DBConnectionError,ErrorHandler, PageNotFoundError } from './middleware/error-handlers/';
+import { Config } from './config';
 
 
 
 
 const mongoDbStart = async () => {
     try {
-        const db = await mongoose.connect(process.env.MONGO_URL!)
+        const db = await mongoose.connect(Config.MONGO_URL)
         console.log("connected to db")
     } catch (e) {
         console.log(e)

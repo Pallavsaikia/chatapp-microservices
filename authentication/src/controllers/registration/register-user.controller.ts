@@ -1,9 +1,9 @@
-import express, { Request, Response, NextFunction } from "express";
-import { StatusCode, SuccessResponse } from "../../../util/response";
-import { DBConflictError, handle } from "../../../middleware/error-handlers";
-import { OTPGenerator } from "../../../util/otp/libs/otp-gen";
-import { sendEmail } from "../../../util/email";
-import { UserRegistrationService, IsUserNameOrEmailAvailableService } from "../../../models/services";
+import { Request, Response, NextFunction } from "express";
+import { StatusCode, SuccessResponse } from "../../util/response";
+import { DBConflictError } from "../../middleware/error-handlers";
+import { OTPGenerator } from "../../util/otp/libs/otp-gen";
+import { sendEmail } from "../../util/email";
+import { UserRegistrationService, IsUserNameOrEmailAvailableService } from "../../db-services";
 
 export async function registerUserController(req: Request, res: Response, next: NextFunction) {
     const { username, email, password } = req.body

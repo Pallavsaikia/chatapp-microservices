@@ -1,7 +1,7 @@
 import express from "express";
 import { verifyUserValidationSchema, validateRequestSchema } from "../../middleware/validations";
 import { handle } from "../../middleware/error-handlers";
-import { verifyUserController } from "../controllers/verification/";
+import { verifyUserController } from "../../controllers/verification";
 
 const router = express.Router()
 
@@ -12,4 +12,4 @@ router.post('/',
     handle(verifyUserController)
 )
 
-export { router as verifyUserRouter}
+export { router as verifyUserApi}

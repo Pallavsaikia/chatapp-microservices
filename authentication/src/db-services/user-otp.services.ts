@@ -1,9 +1,9 @@
-import { DateTime } from "../../util/datetime";
-import {  UnAuthorizedError } from "../../middleware/error-handlers";
-import { StatusCode } from "../../util/response";
-import { OtpMetaData } from "../meta/otp-meta";
-import { Otp } from "../otp";
-import { User, UserAttrTrimmed, UserDocTrimmed } from "../user";
+import { DateTime } from "../util/datetime";
+import { UnAuthorizedError } from "../middleware/error-handlers";
+import { StatusCode } from "../util/response";
+import { OtpMetaData } from "../config";
+import { Otp, User } from "../models";
+import { UserAttrTrimmed, UserDocTrimmed } from "../models/types";
 
 interface ValidateUserOtpSerciveResponseWrapper {
     valid: Boolean,

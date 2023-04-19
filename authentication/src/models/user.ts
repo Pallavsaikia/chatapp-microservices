@@ -1,53 +1,9 @@
 import mongoose from "mongoose";
 import { Password } from "../util/password";
+import { UserAttr, UserAttrTrimmed, UserDoc, UserModel } from "./types";
 
 
-interface UserAttr {
-    email: String,
-    username: String,
-    password: String,
-    verified: Boolean
-    blockOTPRequest: Boolean,
-    otpTimeOut: number,
-    otpAttempts: number
-}
-export interface UserAttrTrimmed {
-    email: String,
-    username: String,
-    password: String
-}
-interface UserModel extends mongoose.Model<UserDoc> {
-    build(attr: UserAttr): UserDoc
-    buildTrimmed(attr: UserAttrTrimmed): UserDoc
-}
 
-export interface UserDoc extends mongoose.Document {
-    _id: String,
-    email: String,
-    username: String,
-    password: String,
-    verified: Boolean,
-    blockOTPRequest: Boolean,
-    otpTimeOut: number,
-    otpAttempts: number
-    createdAt: String,
-    updatedAt: String
-}
-
-export interface UserDocTrimmed
-    extends Omit<UserDoc,
-        "password" |
-        "verified" |
-        "blockOTPRequest" |
-        "otpTimeOut" |
-        "otpAttempts"
-    > {
-    _id: String,
-    email: String,
-    username: String
-    createdAt: String,
-    updatedAt: String
-}
 const userSchema = new mongoose.Schema(
     {
         email: {
@@ -102,8 +58,6 @@ userSchema.statics.buildTrimmed = (attr: UserAttrTrimmed) => {
         otpAttempts: 0
     })
 }
-
-
 
 
 

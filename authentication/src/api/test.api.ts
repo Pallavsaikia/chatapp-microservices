@@ -5,4 +5,4 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     res.send("okay")
 })
 
-export { router as testRouter }
+export { router as testApi }

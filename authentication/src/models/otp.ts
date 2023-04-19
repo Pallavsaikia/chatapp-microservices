@@ -1,24 +1,6 @@
 import mongoose from "mongoose";
+import { OTPAttr, OTPDoc, OTPModel } from "./types";
 
-
-interface OTPAttr {
-    userid: String,
-    otp: String,
-    validUpto: Number,
-}
-
-interface OTPModel extends mongoose.Model<OTPDoc> {
-    build(attr: OTPAttr): OTPDoc
-}
-
-interface OTPDoc extends mongoose.Document {
-    _id: String
-    userid: String,
-    otp: String,
-    validUpto: Number,
-    createdAt: String,
-    updatedAt: String
-}
 
 const OTPSchema = new mongoose.Schema(
     {
