@@ -1,7 +1,8 @@
-import { JWTUserbody } from "./jwt-user-defination-body"
+
 
 export interface JWTTokenAttr {
-    user: JWTUserbody,
+    _id: String,
+    username: String,
     salt: string
     jwtExpiry: number | null
 }

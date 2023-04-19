@@ -1,25 +1,28 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCode, SuccessResponse } from "../util/response";
-import { OTPGenerator } from "../util/otp";
-import { sendEmail } from "../util/email";
-import { userRegistrationService, isUserNameOrEmailAvailableService } from "../db-services";
-import { OtpMetaData } from "../config";
+import { authenticateUserService } from "../db-services";
+import { Config } from "../config";
+import { JWT } from "../middleware/jwt-authentication";
+import { getJwtTokensWrapper } from "../util/wrappers";
 
 export async function loginController(req: Request, res: Response, next: NextFunction) {
     const { username, password } = req.body
-    const { error, user, errorDescription } = await isUserNameOrEmailAvailableService({ username: username, email: "email" })
+    const { error, user, errorDescription } = await authenticateUserService({ username: username, password: password })
     if (error) {
         return next(errorDescription)
     }
-    const otp = OTPGenerator.generateOTP(OtpMetaData.OTP_LENGTH)
-    const saveduser = await userRegistrationService({ email: "email", username: username, password: password }, otp)
-    sendEmail(otp, "email")
+
+    const asserUser = user!
+    const { accessToken, refreshToken } = getJwtTokensWrapper(asserUser, Config.JWT_ACCESS_TOKEN_SALT, Config.JWT_REFRESH_TOKEN_SALT)
+
     return new SuccessResponse(res, {
         data: {
-            id: saveduser._id,
-            username: saveduser.username, email: saveduser.email,
+            id: asserUser._id,
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            username: asserUser.username, email: asserUser.email,
         },
-        message: "created ,verify email to continue", statuscode: StatusCode._201
+        message: "successfully logged in", statuscode: StatusCode._200
     })
 
 }

@@ -15,9 +15,9 @@ export class JWT {
         /**
          * Default expiry value of 15 minutes or 900000 ms
          */
-        const { user, salt, jwtExpiry } = tokenBody
+        const { _id, username, salt, jwtExpiry } = tokenBody
         return jwt.sign({
-            id: user._id, username: user.username, tokentype: JWTTokenType.access,
+            id: _id, username: username, tokentype: JWTTokenType.access,
             exp: (jwtExpiry === null) ? this.jwtExpirytime(JWTTokenExpiryTime.access) : this.jwtExpirytime(jwtExpiry)
         }, salt)
     }
@@ -26,9 +26,9 @@ export class JWT {
         /**
          * Default expiry value of 15 minutes or 7889400000 ms
          */
-        const { user, salt, jwtExpiry } = tokenBody
+        const { _id, username, salt, jwtExpiry } = tokenBody
         return jwt.sign({
-            id: user._id, username: user.username, tokentype: JWTTokenType.refresh,
+            id: _id, username: username, tokentype: JWTTokenType.refresh,
             exp: (jwtExpiry === null) ? this.jwtExpirytime(JWTTokenExpiryTime.refresh) : this.jwtExpirytime(jwtExpiry)
         }, salt)
     }
