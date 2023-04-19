@@ -98,7 +98,7 @@ export const ErrorHandler = (
         error: [{ message: "something went wrong", field: err.name }],
         // message: "something went wrong",
         message: err.message,
-        statuscode: StatusCode._404,
+        statuscode: StatusCode.server_error,
         __t: null
     })
 }

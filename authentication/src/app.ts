@@ -32,7 +32,7 @@ export function app(database: Function | null) {
     
 
     //routes
-    app.use('/', handle(apiRoutes))
+    app.use('/', apiRoutes)
 
 
     //error for page not found

@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from "express"
 
 
-export const handle = (fn: Function) => (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(fn(req, res, next)).catch((e: Error) => { new Error((e as Error).message) })
+export const handle = (fn: Function) => async (req: Request, res: Response, next: NextFunction) => {
+    console.log("names", fn.name)
+    return Promise.resolve(fn(req, res, next)).catch((e) => {
+        console.log(e)
+        next(e)
+    })
 }
