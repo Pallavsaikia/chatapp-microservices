@@ -1,3 +1,3 @@
-export * from './registration.validation.schema'
-export * from './verify-user.validation.schema'
-export * from './login.validation.schema'
+export * from './libs/registration.validation.schema'
+export * from './libs/verify-user.validation.schema'
+export * from './libs/login.validation.schema'
