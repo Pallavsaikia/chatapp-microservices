@@ -1,15 +1,16 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCode, SuccessResponse } from "../../util/response";
 import { DBConflictError } from "../../middleware/error-handlers";
-import { OTPGenerator } from "../../util/otp/libs/otp-gen";
+import { OTPGenerator } from "../../util/otp";
 import { sendEmail } from "../../util/email";
 import { UserRegistrationService, IsUserNameOrEmailAvailableService } from "../../db-services";
+import { OtpMetaData } from "../../config";
 
 export async function registerUserController(req: Request, res: Response, next: NextFunction) {
     const { username, email, password } = req.body
     const { available, user } = await IsUserNameOrEmailAvailableService({ username: username, email: email })
     if (available) {
-        const otp = OTPGenerator.generateOTP()
+        const otp = OTPGenerator.generateOTP(OtpMetaData.OTP_LENGTH)
         const saveduser = await UserRegistrationService({ email: email, username: username, password: password }, otp)
         sendEmail(otp, email)
         return new SuccessResponse(res, {
