@@ -2,8 +2,9 @@ import express, { Request, Response, NextFunction } from 'express'
 import morgan from 'morgan'
 import mongoose from 'mongoose';
 import { app as apiRoutes } from './routes'
-import { DBConnectionError,ErrorHandler, PageNotFoundError } from './middleware/error-handlers/';
+import { DBConnectionError, ErrorHandler, PageNotFoundError } from './middleware/error-handlers/';
 import { Config } from './config';
+import { RabbitMq } from './messaging';
 
 
 
@@ -18,6 +19,12 @@ const mongoDbStart = async () => {
     }
 
 }
+// const sendMsg = async () => {
+//     const rabbitMq = new RabbitMq("amqp://user:HvDxHHJAqRuikn0O@localhost:30221", "test")
+//     await rabbitMq?.connect()
+//     await rabbitMq?.createChannel()
+//     await rabbitMq?.send("test")
+// }
 export function app(database: Function | null) {
     const app = express();
 
