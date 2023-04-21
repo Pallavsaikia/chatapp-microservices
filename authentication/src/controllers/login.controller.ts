@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { StatusCode, SuccessResponse } from "../util/response";
 import { authenticateUserService } from "../db-services";
 import { Config } from "../config";
-import { JWT } from "../middleware/jwt-authentication";
 import { getJwtTokensWrapper } from "../util/wrappers";
 
 export async function loginController(req: Request, res: Response, next: NextFunction) {
