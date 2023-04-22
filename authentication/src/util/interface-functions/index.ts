@@ -1,1 +1,1 @@
-export * from './libs/omit'
+export * from './libs/object-selector'
