@@ -4,7 +4,7 @@ import { mockMongoConnect, mockMongoDisconnect } from "./helpers/moock-mongo"
 import { isValidError, isValidErrorResonseBody, isValidSuccessResonseBody } from "./helpers/valid-response";
 import { OTPGenerator } from "../util/otp/libs/otp-gen";
 
-const request = supertest(app(mockMongoConnect))
+const request = supertest(app(mockMongoConnect, null))
 
 describe('verify-user/', () => {
     const otp = 123456

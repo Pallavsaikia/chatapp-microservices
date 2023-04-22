@@ -3,7 +3,7 @@ import morgan from 'morgan'
 import mongoose from 'mongoose';
 import { app as apiRoutes } from './routes'
 import { DBConnectionError, ErrorHandler, PageNotFoundError } from './middleware/error-handlers/';
-import { Config } from './config';
+import { Config, RabbitMqMetaData } from './config';
 import { RabbitMq } from './messaging';
 
 
@@ -11,21 +11,17 @@ import { RabbitMq } from './messaging';
 
 const mongoDbStart = async () => {
     try {
-        const db = await mongoose.connect(Config.MONGO_URL)
+        await mongoose.connect(Config.MONGO_URL)
         console.log("connected to db")
     } catch (e) {
         console.log(e)
-        // throw new DBConnectionError()
+        process.exit(0)
     }
 
 }
-// const sendMsg = async () => {
-//     const rabbitMq = new RabbitMq("amqp://user:HvDxHHJAqRuikn0O@localhost:30221", "test")
-//     await rabbitMq?.connect()
-//     await rabbitMq?.createChannel()
-//     await rabbitMq?.send("test")
-// }
-export function app(database: Function | null) {
+
+
+export function app(database: Function | null, rabbitmq: RabbitMq | null) {
     const app = express();
 
     app.use(morgan('dev'))
@@ -33,7 +29,15 @@ export function app(database: Function | null) {
     app.use(express.urlencoded({ extended: true }));
     database ? database() : mongoDbStart()
 
-    
+
+
+    app.use(async (req: Request, res: Response, next: NextFunction) => {
+        if (rabbitmq !== null) {
+            res.locals.rabbitmq = rabbitmq
+        }
+        next()
+    });
+
 
     //routes
     app.use('/', apiRoutes)
@@ -48,6 +52,10 @@ export function app(database: Function | null) {
     //global error response--just throw error
     app.use(ErrorHandler);
 
+    process.on('exit', async function (code) {
+        return console.log(`exiting the code implicitly ${code}`);
+    });
 
     return app
 }
+

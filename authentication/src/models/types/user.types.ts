@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 export interface UserAttr {
     email: String,
     username: String,
@@ -8,6 +9,7 @@ export interface UserAttr {
     otpTimeOut: number,
     otpAttempts: number
 }
+
 export interface UserAttrTrimmed {
     email: String,
     username: String,
@@ -45,3 +47,14 @@ export interface UserDocTrimmed
     createdAt: String,
     updatedAt: String
 }
+
+export enum UserDocSecuredEnum {
+    _id = "_id",
+    email = "email",
+    username = "username",
+    createdAt = "createdAt",
+    updatedAt = "updatedAt",
+}
+
+
+

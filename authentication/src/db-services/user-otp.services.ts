@@ -3,10 +3,12 @@ import { UnAuthorizedError } from "../middleware/error-handlers";
 import { StatusCode } from "../util/response";
 import { OtpMetaData } from "../config";
 import { Otp, User } from "../models";
-import { UserAttrTrimmed, UserDocTrimmed } from "../models/types";
+import { UserAttrTrimmed, UserDocTrimmed, UserDocSecuredEnum } from "../models/types";
+import { pick } from "../util/interface-functions";
 
 interface ValidateUserOtpSerciveResponseWrapper {
     valid: Boolean,
+    user: UserDocTrimmed | null,
     error: UnAuthorizedError | null
 }
 
@@ -19,13 +21,17 @@ export async function validateUserOtpSercive(userid: string, otp: string): Promi
         User.findById({ _id: userid }).exec(),
         Otp.find({ userid: userid, otp: otp, validUpto: { $gt: timenow } }).lean()
     ])
+
     if (!user) {
         unauthorizedError.push({ msg: "invalid user id", param: "userid" })
         return {
             valid: false,
+            user: null,
             error: unauthorizedError
         }
     }
+
+    const usertrimmed = pick<UserDocTrimmed>(user, ...Object.keys(UserDocSecuredEnum))
 
     if (user.otpAttempts >= OtpMetaData.MaxOTPAttempts) {
         unauthorizedError.push({ msg: "max otp attemps done", param: "otp" })
@@ -35,6 +41,7 @@ export async function validateUserOtpSercive(userid: string, otp: string): Promi
         await user.save()
         return {
             valid: false,
+            user: usertrimmed,
             error: unauthorizedError
         }
     }
@@ -47,6 +54,7 @@ export async function validateUserOtpSercive(userid: string, otp: string): Promi
         })
         return {
             valid: false,
+            user: usertrimmed,
             error: unauthorizedError
         }
     }
@@ -57,6 +65,7 @@ export async function validateUserOtpSercive(userid: string, otp: string): Promi
         await user.save()
         return {
             valid: false,
+            user: usertrimmed,
             error: unauthorizedError
         }
     }
@@ -69,6 +78,7 @@ export async function validateUserOtpSercive(userid: string, otp: string): Promi
     }
     return {
         valid: true,
+        user: usertrimmed,
         error: null
     }
 }
@@ -79,5 +89,5 @@ export async function userRegistrationService(user: UserAttrTrimmed, otp: string
         userid: saveduser._id, otp: otp,
         validUpto: DateTime.getDateTimeAheadInMilli(OtpMetaData.OTPValidityInMilli)
     }).save()
-    return saveduser
+    return pick<UserDocTrimmed>(saveduser, ...Object.keys(UserDocSecuredEnum))
 }
