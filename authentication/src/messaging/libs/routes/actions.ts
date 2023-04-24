@@ -1,3 +1,6 @@
 export enum RabbitMqAction {
-    userRegistration = "user-registration"
+    created = "created",
+    updated = "updated",
+    deleted = "deleted",
+    verified = "verified"
 }

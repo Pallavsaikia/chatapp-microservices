@@ -1,4 +1,7 @@
-import amqplib, { Connection, Channel } from "amqplib"
+import amqplib, { Connection, Channel, Replies } from "amqplib"
+import { ExchangeName } from "./exchange-name"
+import { RabbitMqExchangeType } from "./rabbitmq-exchangetype"
+import { RoutingKey } from "./routing"
 
 interface RabbitMqReturn {
     success: boolean,
@@ -9,13 +12,15 @@ interface MessagingImplementation {
     url: string
     connection?: Connection
     channel?: Channel
-    queueName: string
+    exchangeName: ExchangeName
+    exchangeType: RabbitMqExchangeType
+    queue?: Replies.AssertQueue
 
     connect(): Promise<RabbitMqReturn>
     createChannel(): Promise<RabbitMqReturn>
-    createChannel(): Promise<RabbitMqReturn>
-    sendMsg(msg: any): Promise<RabbitMqReturn>
-    connnectAndCreateChannel(): Promise<RabbitMqReturn>
+    connectAndCreateChannel(): Promise<RabbitMqReturn>
+    publish(msg: string): Promise<boolean>
+    consume(fn: (msg: Buffer) => void): void
     disconnect(): void
 }
 
@@ -23,11 +28,17 @@ export class RabbitMq implements MessagingImplementation {
     url: string
     connection?: Connection
     channel?: Channel
-    queueName: string
-    constructor(url: string, queueName: string) {
+
+    exchangeName: ExchangeName
+    exchangeType: RabbitMqExchangeType
+    queue?: Replies.AssertQueue
+    routingKey: RoutingKey
+    constructor(url: string, exchangeName: ExchangeName, routingKey: RoutingKey, exchangeType: RabbitMqExchangeType | null) {
         this.url = url
-        this.queueName = queueName
-       
+        this.exchangeName = exchangeName
+        this.routingKey = routingKey
+        this.exchangeType = exchangeType ? exchangeType : RabbitMqExchangeType.Topic
+
     }
 
     async connect(): Promise<RabbitMqReturn> {
@@ -35,8 +46,8 @@ export class RabbitMq implements MessagingImplementation {
             this.connection = await amqplib.connect(this.url)
             return { success: true, rabbitmq: this }
         } catch (e) {
+            this.disconnect()
             console.log(e)
-
         }
         return { success: false, rabbitmq: this }
     }
@@ -48,45 +59,68 @@ export class RabbitMq implements MessagingImplementation {
         }
         try {
             this.channel = await this.connection?.createChannel()
-            await this.channel.assertQueue(this.queueName, { durable: false })
+            await this.channel.assertExchange(this.exchangeName, this.exchangeType, { durable: false })
             return { success: true, rabbitmq: this }
         } catch (e) {
+            this.disconnect()
             console.log(e)
         }
         return { success: false, rabbitmq: this }
     }
 
-    async sendMsg(msg: any): Promise<RabbitMqReturn> {
-        if (!this.channel) {
-            console.log("channel not created")
-            return { success: false, rabbitmq: this }
-        }
-        this.channel.sendToQueue(this.queueName, Buffer.from(msg))
-        return { success: true, rabbitmq: this }
-    }
-
-
-    async connnectAndCreateChannel(): Promise<RabbitMqReturn> {
+    async connectAndCreateChannel(): Promise<RabbitMqReturn> {
         try {
             this.connection = await amqplib.connect(this.url)
-            if (!this.connection) {
-                console.log("connection required")
-                return { success: false, rabbitmq: this }
-            }
-            this.channel = await this.connection?.createChannel()
-            await this.channel.assertQueue(this.queueName, { durable: false })
+            this.channel = await this.connection.createChannel()
+            await this.channel.assertExchange(this.exchangeName, this.exchangeType, { durable: false })
             return { success: true, rabbitmq: this }
         } catch (e) {
+            this.disconnect()
             console.log(e)
         }
         return { success: false, rabbitmq: this }
+    }
+
+    async publish(msg: string): Promise<boolean> {
+        if (!this.channel) {
+            console.log("channel not created")
+            return false
+        }
+        try {
+            this.channel.publish(this.exchangeName, this.routingKey.getRoutingKey(), Buffer.from(msg));
+            return true
+        } catch (e) {
+            console.log(e)
+        }
+        return false
+    }
+
+
+    async consume(fn: (msg: Buffer) => void) {
+        if (!this.channel) {
+            console.log("waiting for messsages")
+            return false
+        }
+        this.queue = await this.channel.assertQueue('', { exclusive: true });
+        this.channel.bindQueue(this.queue.queue, this.exchangeName, this.routingKey.getRoutingKey())
+        this.channel.consume(this.queue.queue, (msg) => {
+            if (msg === null) {
+                return
+            }
+            if (msg.content) {
+                console.log(`Routing Key: ${msg.fields.routingKey}, Message: ${msg.content.toString()}`);
+                fn(msg.content)
+            }
+        }, { noAck: true })
     }
 
     async disconnect() {
+
         try {
-            this.disconnect()
+            this.connection?.close()
         } catch (e) {
             console.log(e)
         }
     }
+
 }

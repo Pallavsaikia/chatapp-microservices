@@ -1,3 +1,5 @@
 export * from './libs/rabbitmq'
 export * from './libs/routing'
 export * from './libs/routes'
+export * from './libs/exchange-name'
+export * from './libs/rabbitmq-exchangetype'

@@ -2,7 +2,8 @@ import { RabbitMqAction, RabbitMqEntity, RabbitMqEvent, RabbitMqService } from "
 
 export interface RoutingKeyStruct {
     service: RabbitMqService ,
-    action: RabbitMqAction,
     entity: RabbitMqEntity,
-    event: RabbitMqEvent
+    action: RabbitMqAction,
+    event: RabbitMqEvent,
+    getRoutingKey():void
 }

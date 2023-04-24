@@ -13,9 +13,9 @@ export async function verifyUserController(req: Request, res: Response, next: Ne
 
     if (res.locals.rabbitmq instanceof RabbitMq) {
         const rabbitmq = res.locals.rabbitmq
-        rabbitmq.sendMsg(JSON.stringify(user))
+        rabbitmq.publish(JSON.stringify(user))
     }
-    
+
     return new SuccessResponse(res, {
         data: null,
         message: "successfully verified", statuscode: StatusCode.accepted
