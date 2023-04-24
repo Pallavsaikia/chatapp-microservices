@@ -1,9 +1,17 @@
 // const https = require('https');
 import http from 'http'
 import { app } from './app'
-import { ExchangeName, RabbitMq, RabbitMqAction, RabbitMqEntity, RabbitMqEvent, RabbitMqService, RoutingKey } from './messaging';
+import {
+    ExchangeName,
+    RabbitMq,
+    RabbitMqAction,
+    RabbitMqEntity,
+    RabbitMqEvent,
+    RabbitMqService,
+    RoutingKey,
+    RabbitMqExchangeType
+} from './messaging';
 import { Config } from './config';
-import { RabbitMqExchangeType } from './messaging/libs/rabbitmq-exchangetype';
 
 const port = process.env.PORT || 3000;
 
