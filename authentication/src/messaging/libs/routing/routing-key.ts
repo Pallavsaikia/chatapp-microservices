@@ -6,9 +6,9 @@ import { RoutingKeyStruct } from "./routing-key.types";
 export class RoutingKey implements RoutingKeyStruct {
     service: RabbitMqService
     entity: RabbitMqEntity
-     event: RabbitMqEvent
+    event: RabbitMqEvent
     action: RabbitMqAction
-   
+
 
     constructor(service: RabbitMqService,
         entity: RabbitMqEntity,
@@ -19,7 +19,7 @@ export class RoutingKey implements RoutingKeyStruct {
         this.action = action
         this.event = event
     }
-    getRoutingKey() {
+    toString() {
         return this.service + "." + this.entity + "." + this.event + "." + this.action
     }
 }

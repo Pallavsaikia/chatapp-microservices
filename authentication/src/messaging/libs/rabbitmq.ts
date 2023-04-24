@@ -87,7 +87,7 @@ export class RabbitMq implements MessagingImplementation {
             return false
         }
         try {
-            this.channel.publish(this.exchangeName, this.routingKey.getRoutingKey(), Buffer.from(msg));
+            this.channel.publish(this.exchangeName, this.routingKey.toString(), Buffer.from(msg));
             return true
         } catch (e) {
             console.log(e)
@@ -102,7 +102,7 @@ export class RabbitMq implements MessagingImplementation {
             return false
         }
         this.queue = await this.channel.assertQueue('', { exclusive: true });
-        this.channel.bindQueue(this.queue.queue, this.exchangeName, this.routingKey.getRoutingKey())
+        this.channel.bindQueue(this.queue.queue, this.exchangeName, this.routingKey.toString())
         this.channel.consume(this.queue.queue, (msg) => {
             if (msg === null) {
                 return

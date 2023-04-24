@@ -5,5 +5,5 @@ export interface RoutingKeyStruct {
     entity: RabbitMqEntity,
     action: RabbitMqAction,
     event: RabbitMqEvent,
-    getRoutingKey():void
+    toString():void
 }
