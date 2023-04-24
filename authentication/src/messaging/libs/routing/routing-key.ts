@@ -1,6 +1,6 @@
 
 import { RabbitMqService, RabbitMqEntity, RabbitMqEvent, RabbitMqAction } from "../routes";
-import { RoutingKeyStruct } from "./";
+import { RoutingKeyStruct } from "./routing-key.types";
 
 
 export class RoutingKey implements RoutingKeyStruct {
