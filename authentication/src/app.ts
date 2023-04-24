@@ -2,8 +2,8 @@ import express, { Request, Response, NextFunction } from 'express'
 import morgan from 'morgan'
 import mongoose from 'mongoose';
 import { app as apiRoutes } from './routes'
-import { DBConnectionError, ErrorHandler, PageNotFoundError } from './middleware/error-handlers/';
-import { Config, RabbitMqMetaData } from './config';
+import { ErrorHandler, PageNotFoundError } from './middleware/error-handlers/';
+import { Config } from './config';
 import { RabbitMq } from './messaging';
 
 
