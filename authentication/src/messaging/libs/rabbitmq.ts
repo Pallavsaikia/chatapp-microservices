@@ -1,7 +1,7 @@
 import amqplib, { Connection, Channel, Replies } from "amqplib"
 import { ExchangeName } from "./exchange-name"
 import { RabbitMqExchangeType } from "./rabbitmq-exchangetype"
-import { RoutingKey } from "./routing"
+import { RoutingKeyStruct } from "./routing"
 
 interface RabbitMqReturn {
     success: boolean,
@@ -32,8 +32,8 @@ export class RabbitMq implements MessagingImplementation {
     exchangeName: ExchangeName
     exchangeType: RabbitMqExchangeType
     queue?: Replies.AssertQueue
-    routingKey: RoutingKey
-    constructor(url: string, exchangeName: ExchangeName, routingKey: RoutingKey, exchangeType: RabbitMqExchangeType | null) {
+    routingKey: RoutingKeyStruct
+    constructor(url: string, exchangeName: ExchangeName, routingKey: RoutingKeyStruct, exchangeType: RabbitMqExchangeType | null) {
         this.url = url
         this.exchangeName = exchangeName
         this.routingKey = routingKey
