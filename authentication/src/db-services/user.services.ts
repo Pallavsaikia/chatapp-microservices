@@ -3,27 +3,35 @@ import { User } from "../models"
 import { DBConflictError, UnAuthorizedError } from "../middleware/error-handlers"
 import { Password } from "../util/password"
 
-export interface IsUserNameOrEmailAvailableAttr {
+interface IsUserNameOrEmailAvailableAttr {
     username: String,
     email: String
 }
-export interface IsUserNameOrEmailAvailableReturnAttr {
+interface IsUserNameOrEmailAvailableReturnAttr {
     error: Boolean,
     user: UserDocTrimmed | null
     errorDescription: DBConflictError | null
 
 }
-export interface AuthenticateUserAttr {
+interface AuthenticateUserAttr {
     username: String,
     password: String
 
 }
-export interface AuthenticateUserReturnAttr {
+interface AuthenticateUserReturnAttr {
     error: Boolean,
     user: UserDocTrimmed | null
     errorDescription: UnAuthorizedError | null
 
 }
+
+interface AuthenticateUserReturnAttr {
+    error: Boolean,
+    user: UserDocTrimmed | null
+    errorDescription: UnAuthorizedError | null
+
+}
+
 export async function authenticateUserService({ username, password }: AuthenticateUserAttr): Promise<AuthenticateUserReturnAttr> {
     const user = await User.findOne({ username: username }).lean()
     const unauthorizedError = new UnAuthorizedError([])
@@ -43,10 +51,10 @@ export async function authenticateUserService({ username, password }: Authentica
             errorDescription: unauthorizedError
         }
     }
-    
+
     if (!(await Password.compare(user.password.toString(), password.toString()))) {
         unauthorizedError.push({ msg: "wrong credential", param: "password" })
-        
+
         return {
             error: true,
             user: null,
@@ -87,4 +95,39 @@ export async function isUserNameOrEmailAvailableService({ username, email }: IsU
     }
 }
 
+interface CheckUserExistByIDAndUserNameAttr {
+    _id: string,
+    username: string
+}
+interface CheckUserExistByIDAndUserNameReturnAttr {
+    error: Boolean,
+    user: UserDocTrimmed | null
+    errorDescription: UnAuthorizedError | null
 
+}
+export async function checkUserExistByIDAndUserName({ _id, username }: CheckUserExistByIDAndUserNameAttr): Promise<CheckUserExistByIDAndUserNameReturnAttr> {
+    const user = await User.findOne({ _id: _id, username: username }).lean()
+    const unauthorizedError = new UnAuthorizedError([])
+    if (!user) {
+        unauthorizedError.push({ msg: "invalid username or id", param: "username" })
+        unauthorizedError.push({ msg: "invalid username or id", param: "_id" })
+        return {
+            error: true,
+            user: null,
+            errorDescription: unauthorizedError
+        }
+    }
+    if (!user.verified) {
+        unauthorizedError.push({ msg: "email not verified", param: "email" })
+        return {
+            error: true,
+            user: null,
+            errorDescription: unauthorizedError
+        }
+    }
+    return {
+        error: false,
+        user: user,
+        errorDescription: null
+    }
+}

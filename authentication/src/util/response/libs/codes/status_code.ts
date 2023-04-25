@@ -15,6 +15,8 @@ export enum StatusCode {
     notfound = 404,
     _409 = 409,
     conflict = 409,
+    _422 = 422,
+    unprocessable_content = 422,
     _500 = 500,
     server_error = 500,
 }

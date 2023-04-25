@@ -33,7 +33,7 @@ export function isValidSuccessResonseBody(res: Response) {
             message: expect.any(String),
             data: expect.any(Object),
             error: null,
-            __t: expect.any(Number)
+            __t: 0
         }))
 
     expect(res.body.success).toBe(true)
