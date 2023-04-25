@@ -98,9 +98,10 @@ export class RabbitMq implements MessagingImplementation {
 
     async consume(fn: (msg: Buffer) => void) {
         if (!this.channel) {
-            console.log("waiting for messsages")
+            console.log("channel not created")
             return false
         }
+        console.log(`waiting for messsages at --------- ${this.routingKey.toString()}`)
         this.queue = await this.channel.assertQueue('', { exclusive: true });
         this.channel.bindQueue(this.queue.queue, this.exchangeName, this.routingKey.toString())
         this.channel.consume(this.queue.queue, (msg) => {

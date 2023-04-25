@@ -23,7 +23,7 @@ const rabbitmqFn = async () => {
     const { success, rabbitmq } = await new RabbitMq(Config.MESSAGIN_QUEUE_URL,
         ExchangeName.chatApp,
         routingKeys,
-        RabbitMqExchangeType.Fanout)
+        RabbitMqExchangeType.Topic)
         .connectAndCreateChannel()
     if (!success) {
         console.log("couldnot start messaging queue")
