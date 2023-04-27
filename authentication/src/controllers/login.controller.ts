@@ -22,6 +22,8 @@ export async function loginController(req: Request, res: Response, next: NextFun
             username: asserUser.username, email: asserUser.email,
         },
         message: "successfully logged in", statuscode: StatusCode._200
+
+        
     })
 
 }
