@@ -12,6 +12,7 @@ import {
     RabbitMqExchangeType
 } from './messaging';
 import { Config } from './config';
+import { Console } from 'console';
 
 const port = process.env.PORT || 3000;
 
@@ -27,16 +28,38 @@ const rabbitmqFn = async () => {
         .connectAndCreateChannel()
     if (!success) {
         console.log("couldnot start messaging queue")
-        process.exit(0)
+        process.exit()
     } else {
         console.log("messaging queue started")
         return rabbitmq
     }
 }
+function processEvents(rabbitmq: RabbitMq) {
+
+    process.on('SIGINT', () => {
+        console.log("disconnecting rabbitmq")
+        rabbitmq.disconnect()
+    })
+    process.on('SIGTERM', () => {
+        console.log("disconnecting rabbitmq")
+        rabbitmq.disconnect()
+    })
+
+    process.on('uncaughtException', function (err) {
+        console.debug("[Uncaught exception]")
+        console.error(err);
+        process.exit(1)
+    })
+
+}
 
 async function server() {
-    const server = http.createServer(app(null, await rabbitmqFn()));
+    const rabbitmq = await rabbitmqFn()
+    const server = http.createServer(app(null, rabbitmq));
+    processEvents(rabbitmq)
     server.listen(port);
+
+
 }
 
 server()
