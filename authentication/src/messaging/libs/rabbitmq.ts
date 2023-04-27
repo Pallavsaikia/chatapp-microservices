@@ -118,7 +118,11 @@ export class RabbitMq implements MessagingImplementation {
     async disconnect() {
 
         try {
-            this.connection?.close()
+            if(this.connection){
+                this.connection.removeAllListeners()
+                this.connection.close()
+            }
+            
         } catch (e) {
             console.log(e)
         }

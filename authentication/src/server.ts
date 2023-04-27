@@ -1,6 +1,7 @@
 // const https = require('https');
 import http from 'http'
 import { app } from './app'
+import mongoose from 'mongoose';
 import {
     ExchangeName,
     RabbitMq,
@@ -12,9 +13,8 @@ import {
     RabbitMqExchangeType
 } from './messaging';
 import { Config } from './config';
-import { Console } from 'console';
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || Config.PORT;
 
 const rabbitmqFn = async () => {
     const routingKeys = new RoutingKey(RabbitMqService.authService,
@@ -34,32 +34,45 @@ const rabbitmqFn = async () => {
         return rabbitmq
     }
 }
-function processEvents(rabbitmq: RabbitMq) {
 
+async function database() {
+    try {
+        await mongoose.connect(Config.MONGO_URL)
+        console.log("connected to db")
+    } catch (e) {
+        console.log(e)
+        process.exit(0)
+    }
+
+}
+
+function closeServerEvents(rabbitmq: RabbitMq, server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>) {
+
+    
     process.on('SIGINT', () => {
-        console.log("disconnecting rabbitmq")
+        console.debug("closing server and rabbitmq")
         rabbitmq.disconnect()
+        process.exit(1)    
     })
-    process.on('SIGTERM', () => {
-        console.log("disconnecting rabbitmq")
-        rabbitmq.disconnect()
-    })
+    
 
     process.on('uncaughtException', function (err) {
         console.debug("[Uncaught exception]")
         console.error(err);
-        process.exit(1)
+        rabbitmq.disconnect()
+        process.exit()
     })
+
 
 }
 
 async function server() {
     const rabbitmq = await rabbitmqFn()
-    const server = http.createServer(app(null, rabbitmq));
-    processEvents(rabbitmq)
+    const server = http.createServer(app(database, rabbitmq));
+    closeServerEvents(rabbitmq, server)
+
+
     server.listen(port);
-
-
 }
 
 server()

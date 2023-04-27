@@ -1,27 +1,16 @@
 import express, { Request, Response, NextFunction } from 'express'
 import morgan from 'morgan'
-import mongoose from 'mongoose';
 import { app as apiRoutes } from './routes'
 import { ErrorHandler, PageNotFoundError } from './middleware/error-handlers/';
-import { Config } from './config';
 import { RabbitMq } from './messaging';
 import helmet from 'helmet'
 
 
 
-const mongoDbStart = async () => {
-    try {
-        await mongoose.connect(Config.MONGO_URL)
-        console.log("connected to db")
-    } catch (e) {
-        console.log(e)
-        process.exit(0)
-    }
-
-}
 
 
-export function app(database: Function | null, rabbitmq: RabbitMq | null) {
+
+export function app(database: Function, rabbitmq: RabbitMq | null) {
     const app = express();
     //helmet
     app.use(helmet.hidePoweredBy());
@@ -41,7 +30,11 @@ export function app(database: Function | null, rabbitmq: RabbitMq | null) {
         next();
     });
 
-    database ? database() : mongoDbStart()
+    if(database){
+        database()
+    }else{
+        process.exit()
+    }
 
 
 
