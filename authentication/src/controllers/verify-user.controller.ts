@@ -12,12 +12,7 @@ export async function verifyUserController(req: Request, res: Response, next: Ne
     }
 
     if (rabbitMQ.clientExist) {
-        try{
-            new UserVerifiedEventPublisher().publish(user!)
-        }catch(e){
-            console.log(e)
-        }
-     
+        new UserVerifiedEventPublisher().publish(user!)     
     }
 
     return new SuccessResponse(res, {
