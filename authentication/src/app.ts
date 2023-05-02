@@ -2,7 +2,6 @@ import express, { Request, Response, NextFunction } from 'express'
 import morgan from 'morgan'
 import { app as apiRoutes } from './routes'
 import { ErrorHandler, PageNotFoundError } from './middleware/error-handlers/';
-import { RabbitMq } from './messaging';
 import helmet from 'helmet'
 
 
@@ -10,7 +9,7 @@ import helmet from 'helmet'
 
 
 
-export function app(database: Function, rabbitmq: RabbitMq | null) {
+export function app(database: Function) {
     const app = express();
     //helmet
     app.use(helmet.hidePoweredBy());
@@ -37,13 +36,6 @@ export function app(database: Function, rabbitmq: RabbitMq | null) {
     }
 
 
-
-    app.use(async (req: Request, res: Response, next: NextFunction) => {
-        if (rabbitmq !== null) {
-            res.locals.rabbitmq = rabbitmq
-        }
-        next()
-    });
 
 
     //routes

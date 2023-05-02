@@ -1,131 +1,50 @@
-import amqplib, { Connection, Channel, Replies } from "amqplib"
+import { rejects } from "assert"
 import { ExchangeName } from "./exchange-name"
+import { RabbitMqClient } from "./base"
 import { RabbitMqExchangeType } from "./rabbitmq-exchangetype"
-import { RoutingKeyStruct } from "./routing"
 
-interface RabbitMqReturn {
-    success: boolean,
-    rabbitmq: RabbitMq
-}
-
-interface MessagingImplementation {
-    url: string
-    connection?: Connection
-    channel?: Channel
-    exchangeName: ExchangeName
-    exchangeType: RabbitMqExchangeType
-    queue?: Replies.AssertQueue
-
-    connect(): Promise<RabbitMqReturn>
-    createChannel(): Promise<RabbitMqReturn>
-    connectAndCreateChannel(): Promise<RabbitMqReturn>
-    publish(msg: string): Promise<boolean>
-    consume(fn: (msg: Buffer) => void): void
+export interface RabbitMQAttr {
+    get client(): RabbitMqClient
+    get clientExist(): boolean
+    connect(url: string, exchangeName: ExchangeName): Promise<Error | null>
     disconnect(): void
 }
+class RabbitMQ implements RabbitMQAttr {
+    private _client?: RabbitMqClient
 
-export class RabbitMq implements MessagingImplementation {
-    url: string
-    connection?: Connection
-    channel?: Channel
-
-    exchangeName: ExchangeName
-    exchangeType: RabbitMqExchangeType
-    queue?: Replies.AssertQueue
-    routingKey: RoutingKeyStruct
-    constructor(url: string, exchangeName: ExchangeName, routingKey: RoutingKeyStruct, exchangeType: RabbitMqExchangeType | null) {
-        this.url = url
-        this.exchangeName = exchangeName
-        this.routingKey = routingKey
-        this.exchangeType = exchangeType ? exchangeType : RabbitMqExchangeType.Topic
-
-    }
-
-    async connect(): Promise<RabbitMqReturn> {
-        try {
-            this.connection = await amqplib.connect(this.url)
-            return { success: true, rabbitmq: this }
-        } catch (e) {
-            this.disconnect()
-            console.log(e)
+    get client() {
+        if (!this._client) {
+            throw new Error("cannot access/connect rabbitmq channel")
         }
-        return { success: false, rabbitmq: this }
+        return this._client!
     }
-
-    async createChannel(): Promise<RabbitMqReturn> {
-        if (!this.connection) {
-            console.log("connection required")
-            return { success: false, rabbitmq: this }
-        }
-        try {
-            this.channel = await this.connection?.createChannel()
-            await this.channel.assertExchange(this.exchangeName, this.exchangeType, { durable: false })
-            return { success: true, rabbitmq: this }
-        } catch (e) {
-            this.disconnect()
-            console.log(e)
-        }
-        return { success: false, rabbitmq: this }
-    }
-
-    async connectAndCreateChannel(): Promise<RabbitMqReturn> {
-        try {
-            this.connection = await amqplib.connect(this.url)
-            this.channel = await this.connection.createChannel()
-            await this.channel.assertExchange(this.exchangeName, this.exchangeType, { durable: false })
-            return { success: true, rabbitmq: this }
-        } catch (e) {
-            this.disconnect()
-            console.log(e)
-        }
-        return { success: false, rabbitmq: this }
-    }
-
-    async publish(msg: string): Promise<boolean> {
-        if (!this.channel) {
-            console.log("channel not created")
+    get clientExist() {
+        if (!this._client) {
             return false
         }
-        try {
-            this.channel.publish(this.exchangeName, this.routingKey.toString(), Buffer.from(msg));
-            return true
-        } catch (e) {
-            console.log(e)
-        }
-        return false
+        return true
     }
+    async connect(url: string, exchangeName: ExchangeName): Promise<Error | null> {
 
+        return new Promise(async (resolve, reject) => {
+            const { success, rabbitmq, error } = await new RabbitMqClient(url,
+                exchangeName,
+                RabbitMqExchangeType.Topic)
+                .connect()
+            if (success) {
+                resolve(null)
+                this._client = rabbitmq
+            } else {
+                reject(error!)
+            }
 
-    async consume(fn: (msg: Buffer) => void) {
-        if (!this.channel) {
-            console.log("channel not created")
-            return false
-        }
-        console.log(`waiting for messsages at --------- ${this.routingKey.toString()}`)
-        this.queue = await this.channel.assertQueue('', { exclusive: true });
-        this.channel.bindQueue(this.queue.queue, this.exchangeName, this.routingKey.toString())
-        this.channel.consume(this.queue.queue, (msg) => {
-            if (msg === null) {
-                return
-            }
-            if (msg.content) {
-                console.log(`Routing Key: ${msg.fields.routingKey}, Message: ${msg.content.toString()}`);
-                fn(msg.content)
-            }
-        }, { noAck: true })
+        })
+
     }
 
     async disconnect() {
-
-        try {
-            if(this.connection){
-                this.connection.removeAllListeners()
-                this.connection.close()
-            }
-            
-        } catch (e) {
-            console.log(e)
-        }
+        this._client?.disconnect()
     }
-
 }
+
+export const rabbitMQ = new RabbitMQ()

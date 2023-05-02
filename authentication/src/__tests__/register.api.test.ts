@@ -3,7 +3,7 @@ import { app } from "../app"
 import { mockMongoConnect, mockMongoDisconnect } from "./helpers/moock-mongo"
 import { isValidError, isValidErrorResonseBody, isValidSuccessResonseBody } from "./helpers/valid-response";
 
-const request = supertest(app(mockMongoConnect, null))
+const request = supertest(app(mockMongoConnect))
 describe('registration/GET', () => {
     let res: any
     it("should return 404", async () => {

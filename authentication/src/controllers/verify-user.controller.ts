@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCode, SuccessResponse } from "../util/response";
 import { validateUserOtpSercive } from "../db-services";
-import { RabbitMq } from "../messaging";
+import { UserVerifiedEventPublisher, rabbitMQ } from "../messaging";
 
 export async function verifyUserController(req: Request, res: Response, next: NextFunction) {
     const { userid, otp } = req.body
@@ -11,9 +11,13 @@ export async function verifyUserController(req: Request, res: Response, next: Ne
         return next(error)
     }
 
-    if (res.locals.rabbitmq instanceof RabbitMq) {
-        const rabbitmq = res.locals.rabbitmq
-        rabbitmq.publish(JSON.stringify(user))
+    if (rabbitMQ.clientExist) {
+        try{
+            new UserVerifiedEventPublisher().publish(user!)
+        }catch(e){
+            console.log(e)
+        }
+     
     }
 
     return new SuccessResponse(res, {

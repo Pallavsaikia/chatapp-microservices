@@ -2,37 +2,15 @@
 import http from 'http'
 import { app } from './app'
 import mongoose from 'mongoose';
-import {
-    ExchangeName,
-    RabbitMq,
-    RabbitMqAction,
-    RabbitMqEntity,
-    RabbitMqEvent,
-    RabbitMqService,
-    RoutingKey,
-    RabbitMqExchangeType
-} from './messaging';
+import { ExchangeName, RabbitMQAttr, UserVerifiedEventListener, UserVerifiedEventPublisher, rabbitMQ } from './messaging';
 import { Config } from './config';
 
 const port = process.env.PORT || Config.PORT;
 
 const rabbitmqFn = async () => {
-    const routingKeys = new RoutingKey(RabbitMqService.authService,
-        RabbitMqEntity.user,
-        RabbitMqEvent.registration,
-        RabbitMqAction.verified)
-    const { success, rabbitmq } = await new RabbitMq(Config.MESSAGIN_QUEUE_URL,
-        ExchangeName.chatApp,
-        routingKeys,
-        RabbitMqExchangeType.Topic)
-        .connectAndCreateChannel()
-    if (!success) {
-        console.log("couldnot start messaging queue")
-        process.exit()
-    } else {
-        console.log("messaging queue started")
-        return rabbitmq
-    }
+
+    return rabbitMQ.connect(Config.MESSAGIN_QUEUE_URL, ExchangeName.chatApp)
+
 }
 
 async function database() {
@@ -46,15 +24,15 @@ async function database() {
 
 }
 
-function closeServerEvents(rabbitmq: RabbitMq, server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>) {
+function closeServerEvents(rabbitmq: RabbitMQAttr, server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>) {
 
-    
+
     process.on('SIGINT', () => {
         console.debug("closing server and rabbitmq")
         rabbitmq.disconnect()
-        process.exit(1)    
+        process.exit(1)
     })
-    
+
 
     process.on('uncaughtException', function (err) {
         console.debug("[Uncaught exception]")
@@ -67,11 +45,10 @@ function closeServerEvents(rabbitmq: RabbitMq, server: http.Server<typeof http.I
 }
 
 async function server() {
-    const rabbitmq = await rabbitmqFn()
-    const server = http.createServer(app(database, rabbitmq));
-    closeServerEvents(rabbitmq, server)
-
-
+    await rabbitmqFn()
+    new UserVerifiedEventListener().subscribe()
+    const server = http.createServer(app(database));
+    closeServerEvents(rabbitMQ, server)
     server.listen(port);
 }
 
