@@ -1,8 +1,8 @@
 import express from "express";
 import { refreshTokenController } from "../controllers";
-import { handle } from "../middleware/error-handlers";
 import { refreshTokenValidationSchema } from "../util/validation-schemas/libs/refreshtoken.validation.schema";
-import { validateRequestSchema } from "../middleware/validations";
+import { handle,validateRequestSchema } from "@pschatapp/middleware";
+
 
 
 const router = express.Router()

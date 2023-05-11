@@ -1,6 +1,6 @@
 import { UserDocTrimmed } from "../models/types"
 import { User } from "../models"
-import { DBConflictError, UnAuthorizedError } from "../middleware/error-handlers"
+import { DBConflictError, UnAuthorizedError } from "@pschatapp/middleware";
 import { Password } from "../util/password"
 
 interface IsUserNameOrEmailAvailableAttr {

@@ -1,5 +1,5 @@
 import { DateTime } from "../util/datetime";
-import { UnAuthorizedError } from "../middleware/error-handlers";
+import {  UnAuthorizedError } from "@pschatapp/middleware";
 import { StatusCode } from  "@pschatapp/response";
 import { OtpMetaData } from "../config";
 import { Otp, User } from "../models";

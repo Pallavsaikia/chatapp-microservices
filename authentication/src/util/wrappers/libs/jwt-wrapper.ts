@@ -1,5 +1,4 @@
-import { JWT } from "../../../middleware/jwt-authentication"
-
+import { JWT } from "@pschatapp/middleware";
 export interface UserTypesJWt {
     _id: String,
     email: String,

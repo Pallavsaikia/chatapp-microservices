@@ -1,7 +1,6 @@
 import express from "express";
 import { loginController } from "../controllers";
-import { handle } from "../middleware/error-handlers";
-import { validateRequestSchema } from "../middleware/validations";
+import { handle,validateRequestSchema } from "@pschatapp/middleware";
 import { loginValidationSchema } from "../util/validation-schemas";
 
 

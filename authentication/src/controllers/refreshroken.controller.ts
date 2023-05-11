@@ -4,7 +4,7 @@ import {  checkUserExistByIDAndUserName } from "../db-services";
 import { Config } from "../config";
 import jwt from "jsonwebtoken";
 import { getJwtTokensWrapper } from "../util/wrappers";
-import { InvalidJWtTokenError, JWTTokenDoc, JWTTokenType, JWtTokenExpiryError } from "../middleware/jwt-authentication";
+import { InvalidJWtTokenError, JWTTokenDoc, JWTTokenType, JWtTokenExpiryError } from "@pschatapp/middleware";
 
 export async function refreshTokenController(req: Request, res: Response, next: NextFunction){
     const token: string = req.body.refreshtoken

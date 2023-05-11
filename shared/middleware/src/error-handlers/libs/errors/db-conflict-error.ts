@@ -1,4 +1,3 @@
-import { ValidationError } from "express-validator"
 import { StatusCode } from  "@pschatapp/response";
 
 export interface DBConflictErrorAttr {

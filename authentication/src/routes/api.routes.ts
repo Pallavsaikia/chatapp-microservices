@@ -1,6 +1,6 @@
 import express from "express";
 
-import { JWTAuth } from "../middleware/jwt-authentication";
+import { JWTAuth } from "@pschatapp/middleware";
 import {
     registerApi,
     testApi,

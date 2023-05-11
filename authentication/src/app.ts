@@ -1,7 +1,8 @@
 import express, { Request, Response, NextFunction } from 'express'
 import morgan from 'morgan'
 import { app as apiRoutes } from './routes'
-import { ErrorHandler, PageNotFoundError } from './middleware/error-handlers/';
+import { ErrorHandler, PageNotFoundError } from "@pschatapp/middleware";
+
 import helmet from 'helmet'
 
 
