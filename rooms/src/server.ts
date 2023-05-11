@@ -2,7 +2,7 @@
 import http from 'http'
 import { app } from './app'
 import mongoose from 'mongoose';
-import { ExchangeName, RabbitMQAttr, UserVerifiedEventListener, UserVerifiedEventPublisher, rabbitMQ } from './messaging';
+import { ExchangeName, RabbitMQAttr, UserVerifiedEventListener,  rabbitMQ } from './messaging';
 import { Config } from './config';
 
 const port = process.env.PORT || Config.PORT;
