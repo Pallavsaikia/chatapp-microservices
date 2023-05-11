@@ -1,9 +1,18 @@
 import { ConsumeMessage } from "amqplib";
-import { Listener, RabbitMqClient } from "../base";
-import { UserVerifiedAttr, UserVerifiedEvent } from "../events/user-verified.event";
-import { RabbitMqAction, RabbitMqEntity, RabbitMqEvent, RabbitMqService } from "../routes";
-import { RoutingKey } from "../routing";
-import { rabbitMQ } from "../rabbitmq";
+import {
+    rabbitMQ,
+    Listener,
+    RoutingKey,
+    RabbitMqService,
+    RabbitMqEntity,
+    RabbitMqEvent,
+    RabbitMqAction,
+    UserVerifiedEvent,
+    UserVerifiedAttr
+
+} from "@pschatapp/messaging"
+
+
 
 
 export class UserVerifiedEventListener extends Listener<UserVerifiedEvent>{
@@ -16,5 +25,3 @@ export class UserVerifiedEventListener extends Listener<UserVerifiedEvent>{
         console.log("message,",msg._id)
     }
 }
-
-

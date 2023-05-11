@@ -1,1 +1,1 @@
-export * from './user-verified.publishers'
+export * from './user-verfied.publisher'

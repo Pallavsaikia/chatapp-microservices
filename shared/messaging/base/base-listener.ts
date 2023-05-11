@@ -1,7 +1,7 @@
 import { ConsumeMessage } from "amqplib";
 import { RabbitMqClient } from "./client-rabbitmq";
 import { RoutingKey } from "../routing";
-import { Event } from "../events";
+import { Event } from "./base-event";
 
 
 export abstract class Listener<T extends Event>  {

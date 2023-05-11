@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { SuccessResponse,StatusCode } from "@pschatapp/response";
 import { validateUserOtpSercive } from "../db-services";
-import { UserVerifiedEventPublisher, rabbitMQ } from "../messaging";
+import {  rabbitMQ } from "@pschatapp/messaging";
+import { UserVerifiedEventPublisher } from "../messaging";
 
 export async function verifyUserController(req: Request, res: Response, next: NextFunction) {
     const { userid, otp } = req.body

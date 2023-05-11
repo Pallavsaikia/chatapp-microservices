@@ -2,7 +2,7 @@
 import http from 'http'
 import { app } from './app'
 import mongoose from 'mongoose';
-import { ExchangeName, RabbitMQAttr, UserVerifiedEventListener, UserVerifiedEventPublisher, rabbitMQ } from './messaging';
+import { ExchangeName, RabbitMQAttr,  rabbitMQ } from '@pschatapp/messaging';
 import { Config } from './config';
 
 const port = process.env.PORT || Config.PORT;
@@ -46,7 +46,7 @@ function closeServerEvents(rabbitmq: RabbitMQAttr, server: http.Server<typeof ht
 
 async function server() {
     await rabbitmqFn()
-    new UserVerifiedEventListener().subscribe()
+   
     const server = http.createServer(app(database));
     closeServerEvents(rabbitMQ, server)
     server.listen(port);
