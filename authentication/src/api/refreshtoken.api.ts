@@ -1,12 +1,14 @@
 import express from "express";
-import { JWTRefresh } from "../middleware/jwt-authentication";
-import { Config } from "../config";
+import { refreshTokenController } from "../controllers";
+import { handle } from "../middleware/error-handlers";
+import { refreshTokenValidationSchema } from "../util/validation-schemas/libs/refreshtoken.validation.schema";
+import { validateRequestSchema } from "../middleware/validations";
 
 
 const router = express.Router()
 
-const jwtRefresh = new JWTRefresh(Config.JWT_REFRESH_TOKEN_SALT, Config.JWT_ACCESS_TOKEN_SALT)
-
-router.post('/',jwtRefresh.refreshMiddleware())
+router.post('/', refreshTokenValidationSchema,
+    validateRequestSchema
+    , handle(refreshTokenController))
 
 export { router as refreshTokenApi }
