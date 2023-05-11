@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { StatusCode, SuccessResponse } from "../util/response";
+import { SuccessResponse,StatusCode } from "@pschatapp/response";
 import { OTPGenerator } from "../util/otp";
 import { sendEmail } from "../util/email";
 import { userRegistrationService, isUserNameOrEmailAvailableService } from "../db-services";

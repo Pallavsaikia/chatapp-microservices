@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from "express";
-import { ErrorResponse, StatusCode, TokenCode } from "../../../../util/response";
+import { ErrorResponse, StatusCode, TokenCode } from  "@pschatapp/response";
 
 import {
     DBConflictError,

@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { StatusCode, SuccessResponse } from "../util/response";
+// import { StatusCode, SuccessResponse } from "../util/response";
 import { authenticateUserService } from "../db-services";
 import { Config } from "../config";
 import { getJwtTokensWrapper } from "../util/wrappers";
+import { SuccessResponse,StatusCode } from "@pschatapp/response";
 
 export async function loginController(req: Request, res: Response, next: NextFunction) {
     const { username, password } = req.body

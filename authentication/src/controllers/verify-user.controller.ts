@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { StatusCode, SuccessResponse } from "../util/response";
+import { SuccessResponse,StatusCode } from "@pschatapp/response";
 import { validateUserOtpSercive } from "../db-services";
 import { UserVerifiedEventPublisher, rabbitMQ } from "../messaging";
 

@@ -23,6 +23,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pschatapp/response": "^1.1.1",
     "amqplib": "^0.10.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",

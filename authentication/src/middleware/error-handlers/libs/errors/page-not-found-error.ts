@@ -1,4 +1,4 @@
-import { StatusCode } from "../../../../util/response"
+import { StatusCode } from  "@pschatapp/response";
 
 export class PageNotFoundError extends Error {
     reason = "Page not found"

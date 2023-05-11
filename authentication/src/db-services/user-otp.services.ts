@@ -1,6 +1,6 @@
 import { DateTime } from "../util/datetime";
 import { UnAuthorizedError } from "../middleware/error-handlers";
-import { StatusCode } from "../util/response";
+import { StatusCode } from  "@pschatapp/response";
 import { OtpMetaData } from "../config";
 import { Otp, User } from "../models";
 import { UserAttrTrimmed, UserDocTrimmed, UserDocSecuredEnum } from "../models/types";

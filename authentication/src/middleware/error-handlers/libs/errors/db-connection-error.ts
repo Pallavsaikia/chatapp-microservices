@@ -1,4 +1,4 @@
-import { StatusCode } from "../../../../util/response"
+import { StatusCode } from  "@pschatapp/response";
 
 export class DBConnectionError extends Error {
     reason = "Couldnot connect to Db"

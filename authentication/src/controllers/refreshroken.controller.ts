@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { StatusCode, SuccessResponse } from "../util/response";
+import { SuccessResponse,StatusCode } from "@pschatapp/response";
 import {  checkUserExistByIDAndUserName } from "../db-services";
 import { Config } from "../config";
 import jwt from "jsonwebtoken";
