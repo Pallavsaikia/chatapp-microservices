@@ -1,4 +1,3 @@
-import { rejects } from "assert"
 import { ExchangeName } from "./exchange-name"
 import { RabbitMqClient } from "./base"
 import { RabbitMqExchangeType } from "./rabbitmq-exchangetype"
@@ -9,8 +8,15 @@ export interface RabbitMQAttr {
     connect(url: string, exchangeName: ExchangeName): Promise<Error | null>
     disconnect(): void
 }
-class RabbitMQ implements RabbitMQAttr {
+class RabbitMQ extends RabbitMqClient {
+
     private _client?: RabbitMqClient
+    url!: string
+    exchangeName!: ExchangeName
+    exchangeType: RabbitMqExchangeType = RabbitMqExchangeType.Topic
+
+
+
 
     get client() {
         if (!this._client) {
@@ -18,19 +24,19 @@ class RabbitMQ implements RabbitMQAttr {
         }
         return this._client!
     }
+
     get clientExist() {
         if (!this._client) {
             return false
         }
         return true
     }
-    async connect(url: string, exchangeName: ExchangeName): Promise<Error | null> {
 
+    async connectConfirm(url: string, exchangeName: ExchangeName): Promise<Error | null> {
+        this.url = url
+        this.exchangeName = exchangeName
         return new Promise(async (resolve, reject) => {
-            const { success, rabbitmq, error } = await new RabbitMqClient(url,
-                exchangeName,
-                RabbitMqExchangeType.Topic)
-                .connect()
+            const { success, rabbitmq, error } = await this.connect()
             if (success) {
                 resolve(null)
                 this._client = rabbitmq
@@ -42,8 +48,8 @@ class RabbitMQ implements RabbitMQAttr {
 
     }
 
-    async disconnect() {
-        this._client?.disconnect()
+    async disconnectConfirm() {
+        this.disconnect()
     }
 }
 

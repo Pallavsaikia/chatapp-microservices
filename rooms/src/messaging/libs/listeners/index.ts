@@ -1,1 +1,1 @@
-export * from './user-verified.listeners'
+export * from './user-verfied.listener'

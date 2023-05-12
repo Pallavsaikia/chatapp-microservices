@@ -11,24 +11,28 @@ interface RabbitMqReturn {
 
 
 
-export class RabbitMqClient  {
-    url: string
+
+export abstract class RabbitMqClient {
+    abstract url: string
+    abstract exchangeName: ExchangeName
+    abstract exchangeType: RabbitMqExchangeType
+    queue?: Replies.AssertQueue
     connection?: Connection
     channel?: Channel
 
-    exchangeName: ExchangeName
-    exchangeType: RabbitMqExchangeType
-    queue?: Replies.AssertQueue
-    constructor(url: string, exchangeName: ExchangeName, exchangeType: RabbitMqExchangeType | null) {
-        this.url = url
-        this.exchangeName = exchangeName
+    constructor() { }
 
-        this.exchangeType = exchangeType ? exchangeType : RabbitMqExchangeType.Topic
+    protected async connect(): Promise<RabbitMqReturn> {
 
-    }
-
-    async connect(): Promise<RabbitMqReturn> {
         try {
+            if (!this.url) {
+                this.disconnect()
+                return { success: false, rabbitmq: this, error: new Error("no url found") }
+            }
+            if (!this.exchangeName) {
+                this.disconnect()
+                return { success: false, rabbitmq: this, error: new Error("no exchange name found") }
+            }
             this.connection = await amqplib.connect(this.url)
             this.channel = await this.connection.createChannel()
             await this.channel.assertExchange(this.exchangeName, this.exchangeType, { durable: false })
@@ -43,9 +47,7 @@ export class RabbitMqClient  {
 
 
 
-
-
-    async disconnect() {
+    protected async disconnect() {
 
         try {
             if (this.connection) {

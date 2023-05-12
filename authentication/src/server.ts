@@ -2,14 +2,14 @@
 import http from 'http'
 import { app } from './app'
 import mongoose from 'mongoose';
-import { ExchangeName, RabbitMQAttr,  rabbitMQ } from '@pschatapp/messaging';
+import { ExchangeName,   rabbitMQ } from '@pschatapp/messaging';
 import { Config } from './config';
 
 const port = process.env.PORT || Config.PORT;
 
 const rabbitmqFn = async () => {
 
-    return rabbitMQ.connect(Config.MESSAGIN_QUEUE_URL, ExchangeName.chatApp)
+    return rabbitMQ.connectConfirm(Config.MESSAGIN_QUEUE_URL, ExchangeName.chatApp)
 
 }
 
@@ -24,12 +24,12 @@ async function database() {
 
 }
 
-function closeServerEvents(rabbitmq: RabbitMQAttr, server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>) {
+function closeServerEvents() {
 
 
     process.on('SIGINT', () => {
         console.debug("closing server and rabbitmq")
-        rabbitmq.disconnect()
+        rabbitMQ.disconnectConfirm()
         process.exit(1)
     })
 
@@ -37,7 +37,7 @@ function closeServerEvents(rabbitmq: RabbitMQAttr, server: http.Server<typeof ht
     process.on('uncaughtException', function (err) {
         console.debug("[Uncaught exception]")
         console.error(err);
-        rabbitmq.disconnect()
+        rabbitMQ.disconnectConfirm()
         process.exit()
     })
 
@@ -48,7 +48,7 @@ async function server() {
     await rabbitmqFn()
    
     const server = http.createServer(app(database));
-    closeServerEvents(rabbitMQ, server)
+    closeServerEvents()
     server.listen(port);
 }
 

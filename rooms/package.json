@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/Pallavsaikia/chatapp-microservices#readme",
   "dependencies": {
+    "@pschatapp/messaging": "^1.2.2",
     "amqplib": "^0.10.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
