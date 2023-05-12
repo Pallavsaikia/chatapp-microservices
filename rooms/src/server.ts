@@ -10,7 +10,7 @@ const port = process.env.PORT || Config.PORT;
 
 const rabbitmqFn = async () => {
 
-    return rabbitMQ.connectConfirm(Config.MESSAGIN_QUEUE_URL, ExchangeName.chatApp)
+    return rabbitMQ.connectConfirm(Config.RABBITMQ_URL, ExchangeName.chatApp)
 
 }
 

@@ -30,7 +30,9 @@
   },
   "homepage": "https://github.com/Pallavsaikia/chatapp-microservices#readme",
   "dependencies": {
-    "@pschatapp/messaging": "^1.2.2",
+    "@pschatapp/messaging": "^1.3.0",
+    "@pschatapp/middleware": "^1.1.2",
+    "@pschatapp/response": "^1.1.1",
     "amqplib": "^0.10.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
@@ -47,6 +49,7 @@
     "@types/jest": "^29.5.0",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/mongodb-memory-server": "^2.3.0",
+    "@types/mongoose": "^5.11.97",
     "@types/morgan": "^1.9.4",
     "@types/node": "^18.15.11",
     "@types/supertest": "^2.0.12",

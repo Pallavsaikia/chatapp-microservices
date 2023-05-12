@@ -10,10 +10,17 @@ import {
     UserVerifiedEvent
 
 } from "@pschatapp/messaging"
+import { Replies } from "amqplib"
 
 
 
 export class UserVerifiedEventPublisher extends Publisher<UserVerifiedEvent>{
+    onSuccess(err: any, ok: Replies.Empty): void {
+        console.log("success")
+    }
+    onFail(err: any, ok: Replies.Empty): void {
+        console.log("fail", err)
+    }
     routingKey: RoutingKey
     constructor() {
         rabbitMQ

@@ -1,4 +1,4 @@
-import amqplib, { Connection, Channel, Replies } from "amqplib"
+import amqplib, { Connection, ConfirmChannel, Replies } from "amqplib"
 import { ExchangeName } from "../exchange-name"
 import { RabbitMqExchangeType } from "../rabbitmq-exchangetype"
 
@@ -18,7 +18,7 @@ export abstract class RabbitMqClient {
     abstract exchangeType: RabbitMqExchangeType
     queue?: Replies.AssertQueue
     connection?: Connection
-    channel?: Channel
+    channel?: ConfirmChannel
 
     constructor() { }
 
@@ -34,7 +34,7 @@ export abstract class RabbitMqClient {
                 return { success: false, rabbitmq: this, error: new Error("no exchange name found") }
             }
             this.connection = await amqplib.connect(this.url)
-            this.channel = await this.connection.createChannel()
+            this.channel = await this.connection.createConfirmChannel()
             await this.channel.assertExchange(this.exchangeName, this.exchangeType, { durable: false })
             return { success: true, rabbitmq: this }
         } catch (e) {
