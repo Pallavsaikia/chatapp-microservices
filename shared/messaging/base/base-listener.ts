@@ -8,6 +8,11 @@ export abstract class Listener<T extends Event>  {
     private client: RabbitMqClient
     abstract routingKey: RoutingKey
     abstract onMessage(msg: T['data'], msgbfr: ConsumeMessage): void
+    abstract exclusive: boolean | null
+    abstract durable: boolean | null
+    abstract autoDelete: boolean | null
+    abstract expires: number | null
+    abstract queueName: string | null
     constructor(client: RabbitMqClient) {
         this.client = client
     }
@@ -18,7 +23,12 @@ export abstract class Listener<T extends Event>  {
             return false
         }
         console.log(`waiting for messsages at --------- ${this.routingKey.toString()}`)
-        this.client.queue = await this.client.channel.assertQueue('', { exclusive: true });
+        this.client.queue = await this.client.channel.assertQueue(this.queueName ? this.queueName : '', {
+            exclusive: this.exclusive ? this.exclusive : false,
+            durable: this.durable ? this.durable : true,
+            autoDelete: this.autoDelete ? this.autoDelete : false,
+            expires: this.expires ? this.expires : 150000
+        });
         this.client.channel.bindQueue(this.client.queue.queue, this.client.exchangeName, this.routingKey.toString())
         this.client.channel.consume(this.client.queue.queue, (msg) => {
             if (msg !== null) {

@@ -7,6 +7,9 @@ import { Replies } from "amqplib";
 export abstract class Publisher<T extends Event>  {
     private client: RabbitMqClient
     abstract routingKey: RoutingKey
+    abstract mandatory: boolean | null
+    abstract persistent: boolean | null
+    abstract expiration: number | null
     abstract onFail(err: any, ok: Replies.Empty): void
     abstract onSuccess(err: any, ok: Replies.Empty): void
     constructor(client: RabbitMqClient) {
@@ -22,7 +25,11 @@ export abstract class Publisher<T extends Event>  {
             return this.client.channel.publish(this.client.exchangeName,
                 this.routingKey.toString(),
                 Buffer.from(JSON.stringify(msg)),
-                { mandatory: true, persistent: true }, (err: any, ok: Replies.Empty) => {
+                {
+                    mandatory: this.mandatory ? this.mandatory : true,
+                    persistent: this.persistent ? this.persistent : true,
+                    expiration: this.expiration ? this.expiration : 150000
+                }, (err: any, ok: Replies.Empty) => {
                     if (err) {
                         this.onFail(err, ok)
                     } else {

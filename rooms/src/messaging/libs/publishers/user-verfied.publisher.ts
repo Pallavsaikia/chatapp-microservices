@@ -15,7 +15,11 @@ import { Replies } from "amqplib"
 
 
 export class UserVerifiedEventPublisher extends Publisher<UserVerifiedEvent>{
+    mandatory?: boolean | undefined
+    persistent?: boolean | undefined
+    expiration?: number | undefined
     routingKey: RoutingKey
+
     onSuccess(err: any, ok: Replies.Empty): void {
         console.log("success")
     }
@@ -23,9 +27,9 @@ export class UserVerifiedEventPublisher extends Publisher<UserVerifiedEvent>{
         console.log("fail", err)
     }
     constructor() {
-        rabbitMQ
         super(rabbitMQ.client)
         this.routingKey = new RoutingKey(RabbitMqService.authService, RabbitMqEntity.user, RabbitMqEvent.registration, RabbitMqAction.verified)
+      
     }
 
 }
