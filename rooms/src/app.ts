@@ -3,7 +3,7 @@ import morgan from 'morgan'
 // import { app as apiRoutes } from './routes'
 import { ErrorHandler, PageNotFoundError } from '@pschatapp/middleware'
 import helmet from 'helmet'
-
+import { app as apiRoutes } from './routes'
 
 
 
@@ -29,9 +29,9 @@ export function app(database: Function) {
         next();
     });
 
-    if(database){
+    if (database) {
         database()
-    }else{
+    } else {
         process.exit()
     }
 
@@ -39,7 +39,7 @@ export function app(database: Function) {
 
 
     //routes
-    // app.use('/', apiRoutes)
+    app.use('/', apiRoutes)
 
 
     //error for page not found

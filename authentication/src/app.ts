@@ -40,7 +40,7 @@ export function app(database: Function) {
 
 
     //routes
-    app.use('/', apiRoutes)
+    app.use('/auth/', apiRoutes)
 
 
     //error for page not found

@@ -1,7 +1,7 @@
 import express from "express";
 import { loginController } from "../controllers";
 import { handle,validateRequestSchema } from "@pschatapp/middleware";
-import { loginValidationSchema } from "../util/validation-schemas";
+import { loginValidationSchema } from "../validation-schemas";
 
 
 const router = express.Router()

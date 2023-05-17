@@ -1,7 +1,7 @@
 import express from "express";
 import { verifyUserController } from "../controllers";
 import { handle,validateRequestSchema } from "@pschatapp/middleware";
-import { verifyUserValidationSchema } from "../util/validation-schemas";
+import { verifyUserValidationSchema } from "../validation-schemas";
 
 const router = express.Router()
 

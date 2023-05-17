@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import { app } from "../app"
-import { mockMongoConnect, mockMongoDisconnect } from "./helpers/moock-mongo"
+import { mockMongoConnect, mockMongoDisconnect } from "./helpers/mock-mongo"
 import { isValidError, isValidErrorResonseBody, isValidSuccessResonseBody } from "./helpers/valid-response";
 import { OTPGenerator } from "../util/otp/libs/otp-gen";
 
@@ -20,11 +20,11 @@ describe('verify-user/', () => {
     let res: any, res1: any, res2: any
     let userid: any
     it("register", async () => {
-        res = await request.post("/register").send({ email: "pallavsaikia50@gmail.com", username: "paultest", password: "123456" }).expect(201)
+        res = await request.post("/auth/register").send({ email: "pallavsaikia50@gmail.com", username: "paultest", password: "123456" }).expect(201)
         userid = res.body.data.id
     })
     it("should be not be verified", async () => {
-        res1 = await request.post("/verify-user").send({ userid: userid, otp: wrongOtp }).expect(401)
+        res1 = await request.post("/auth/verify-user").send({ userid: userid, otp: wrongOtp }).expect(401)
 
     })
     it("should be valid error response ", () => {
@@ -34,7 +34,7 @@ describe('verify-user/', () => {
         isValidError(res1)
     })
     it("should be verified", async () => {
-        res2 = await request.post("/verify-user").send({ userid: userid, otp: otp }).expect(202)
+        res2 = await request.post("/auth/verify-user").send({ userid: userid, otp: otp }).expect(202)
 
     })
     it("should be valid success response ", async () => {

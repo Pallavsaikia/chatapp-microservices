@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import { app } from "../app"
-import { mockMongoConnect, mockMongoDisconnect } from "./helpers/moock-mongo"
+import { mockMongoConnect, mockMongoDisconnect } from "./helpers/mock-mongo"
 import { isValidError, isValidErrorResonseBody, isValidSuccessResonseBody } from "./helpers/valid-response";
 import { OTPGenerator } from "../util/otp/libs/otp-gen";
 
@@ -27,13 +27,13 @@ describe('Error-login/', () => {
     let userid: any
     let res1: any
     it("register and verify", async () => {
-        const res = await request.post("/register").send({ email: "pallavsaikia50@gmail.com", username: "paultest", password: password }).expect(201)
+        const res = await request.post("/auth/register").send({ email: "pallavsaikia50@gmail.com", username: "paultest", password: password }).expect(201)
         userid = res.body.data.id
-        await request.post("/verify-user").send({ userid: userid, otp: otp }).expect(202)
+        await request.post("/auth/verify-user").send({ userid: userid, otp: otp }).expect(202)
     })
 
     it("wrong login cred/should be 400", async () => {
-        res1 = await request.post("/login").send({ username: "paultest", password: wrongpassword }).expect(400)
+        res1 = await request.post("/auth/login").send({ username: "paultest", password: wrongpassword }).expect(400)
 
     })
     it("should be valid error responsebody", async () => {
@@ -48,7 +48,7 @@ describe('Error-login/', () => {
 describe('success-login/', () => {
     let res1: any
     it("should be 200", async () => {
-        res1 = await request.post("/login").send({ username: "paultest", password: password }).expect(200)
+        res1 = await request.post("/auth/login").send({ username: "paultest", password: password }).expect(200)
 
     })
     it("should be valid responsebody", async () => {

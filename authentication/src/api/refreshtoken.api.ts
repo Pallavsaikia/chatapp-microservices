@@ -1,6 +1,6 @@
 import express from "express";
 import { refreshTokenController } from "../controllers";
-import { refreshTokenValidationSchema } from "../util/validation-schemas/libs/refreshtoken.validation.schema";
+import { refreshTokenValidationSchema } from "../validation-schemas";
 import { handle,validateRequestSchema } from "@pschatapp/middleware";
 
 
