@@ -27,8 +27,14 @@ export abstract class Listener<T extends Event>  {
             exclusive: this.exclusive ? this.exclusive : false,
             durable: this.durable ? this.durable : true,
             autoDelete: this.autoDelete ? this.autoDelete : false,
-            expires: this.expires ? this.expires : 150000
+            expires: this.expires ? this.expires : 604800000 //7 days
         });
+        const { success, error } = await this.client.assertExchange()
+        if (!success) {
+            console.log(error)
+            return false
+            
+        }
         this.client.channel.bindQueue(this.client.queue.queue, this.client.exchangeName, this.routingKey.toString())
         this.client.channel.consume(this.client.queue.queue, (msg) => {
             if (msg !== null) {

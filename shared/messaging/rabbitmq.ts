@@ -14,7 +14,7 @@ class RabbitMQ extends RabbitMqClient {
     url!: string
     exchangeName!: ExchangeName
     exchangeType: RabbitMqExchangeType = RabbitMqExchangeType.Topic
-
+    durableExchange!: boolean
 
 
 
@@ -32,9 +32,10 @@ class RabbitMQ extends RabbitMqClient {
         return true
     }
 
-    async connectConfirm(url: string, exchangeName: ExchangeName): Promise<Error | null> {
+    async connectConfirm(url: string, exchangeName: ExchangeName, durableExchange?: boolean): Promise<Error | null> {
         this.url = url
         this.exchangeName = exchangeName
+        this.durableExchange = durableExchange ? durableExchange : true
         return new Promise(async (resolve, reject) => {
             const { success, rabbitmq, error } = await this.connect()
             if (success) {
@@ -47,7 +48,9 @@ class RabbitMQ extends RabbitMqClient {
         })
 
     }
-
+    async deleteExchangeConfirm() {
+        this.deleteExchange()
+    }
     async disconnectConfirm() {
         this.disconnect()
     }

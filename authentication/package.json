@@ -23,7 +23,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pschatapp/messaging": "^1.3.3",
+    "@pschatapp/messaging": "^1.4.1",
     "@pschatapp/middleware": "^1.1.2",
     "@pschatapp/response": "^1.1.1",
     "amqplib": "^0.10.3",

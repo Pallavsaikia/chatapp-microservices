@@ -39,7 +39,7 @@ export function app(database: Function) {
 
 
     //routes
-    app.use('/', apiRoutes)
+    app.use('/rooms/', apiRoutes)
 
 
     //error for page not found

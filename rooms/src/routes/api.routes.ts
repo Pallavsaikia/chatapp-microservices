@@ -9,6 +9,6 @@ import { Config } from "../config";
 const app = express.Router()
 const jwtauth = new JWTAuth(Config.JWT_ACCESS_TOKEN_SALT)
 
-app.use("/rooms", jwtauth.authFnMiddleware(), roomApi)
+app.use("/create", jwtauth.authFnMiddleware(), roomApi)
 
 export { app }

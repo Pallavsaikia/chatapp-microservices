@@ -1,6 +1,6 @@
 {
   "name": "@pschatapp/messaging",
-  "version": "1.3.3",
+  "version": "1.4.1",
   "description": "",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -8,6 +8,7 @@
     "build/**/*"
   ],
   "scripts": {
+    "test":"tsc && node build/__test__/topic.test.js",
     "build": "tsc"
   },
   "keywords": [],
