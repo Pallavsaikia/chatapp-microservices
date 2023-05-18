@@ -1,26 +1,33 @@
 import amqplib, { Connection, ConfirmChannel, Replies } from "amqplib"
 import { ExchangeName } from "../exchange-name"
 import { RabbitMqExchangeType } from "../rabbitmq-exchangetype"
+import { RabbitMqQueues } from "../queues"
+import { RoutingKey } from "../routing"
 
 
 interface RabbitMqReturn {
-    success: boolean,
+    success: boolean
     error?: Error
     rabbitmq: RabbitMqClient
 }
 
 interface AssertExchangeReturn {
-    success: boolean,
+    success: boolean
     error: Error | null
 }
 
+interface AssertQueueReturn {
+    success: boolean
+    queue?: Replies.AssertQueue
+    error: Error | null
+}
 
 export abstract class RabbitMqClient {
     abstract url: string
     abstract exchangeName: ExchangeName
     abstract exchangeType: RabbitMqExchangeType
     abstract durableExchange: boolean
-    queue?: Replies.AssertQueue
+
     connection?: Connection
     channel?: ConfirmChannel
 
@@ -61,6 +68,32 @@ export abstract class RabbitMqClient {
         }
 
     }
+
+    async assertBindExchangeAndQueue(rabbitMqQueues: RabbitMqQueues, routingKey: RoutingKey): Promise<AssertQueueReturn> {
+        if (!this.channel) {
+            return { success: false, error: new Error("no channel") }
+        }
+        const queue = await this.channel.assertQueue(rabbitMqQueues.queueName, {
+            exclusive: rabbitMqQueues.exclusive,
+            durable: rabbitMqQueues.durable,
+            autoDelete: rabbitMqQueues.autoDelete,
+            expires: rabbitMqQueues.expires
+        });
+        const { success, error } = await this.assertExchange()
+        if (!success) {
+            console.log(error)
+
+            return { success: false, error: error }
+
+        }
+        this.channel.bindQueue(queue.queue, this.exchangeName, routingKey.toString())
+        return {
+            success: true,
+            queue: queue,
+            error: null
+        }
+    }
+
 
     protected async deleteExchange() {
         try {
